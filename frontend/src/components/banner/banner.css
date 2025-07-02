@@ -12,21 +12,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 50px 0;
+    padding: 20px 0;
     max-width: 1200px;
     margin: 0 auto;
     margin-bottom: 64px; /* ou o valor que desejar */
     width: 100%;
     box-sizing: border-box;
     background: rgba(0, 0, 0, 0);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.537);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 4px solid rgba(255, 255, 255, 0.1);
+    border: 3px solid rgba(255, 255, 255, 0.1);
 }
 
 .banner-content {
-    padding: 0 77px;
+    padding: 0 32px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -63,7 +63,7 @@
 .banner-learn-button {
     color: #174EB2;
     background-color: #FFF;
-    border: 1px solid #174EB2;
+    border: 1px solid #3d3f48;
 }
 
 .banner-learn-button:hover {
@@ -76,15 +76,15 @@
     width: 100%;
     max-width: 400px;
     margin: 0 auto;
-    position: relative;
+    position: center;
     display: flex;
-    justify-content: center;
+    justify-content: right;
 }
 
 
 /* Aumenta apenas a imagem ellipse.png sem aumentar o banner */
 .banner-graphic>img:first-child {
-    width: 150%;
+    width: 100%;
     max-width: 1500px;
     height: auto;
 

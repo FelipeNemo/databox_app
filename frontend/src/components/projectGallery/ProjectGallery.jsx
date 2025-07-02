@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./ProjectGallery.css";
 
 const projects = [
@@ -21,10 +21,25 @@ const projects = [
 ];
 
 const ProjectGallery = () => {
+
   const [current, setCurrent] = useState(0);
 
   const next = () => setCurrent((prev) => (prev + 1) % projects.length);
   const prev = () => setCurrent((prev) => (prev - 1 + projects.length) % projects.length);
+
+  // Avanço automático a cada 10s
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % projects.length);
+    }, 18000); // 18 segundos
+    return () => clearInterval(interval);
+  }, [current]);
+
+  // Adiciona transição suave na imagem
+  const imageStyle = {
+    transition: 'opacity 0.7s cubic-bezier(0.4,0,0.2,1)',
+    opacity: 1
+  };
 
   return (
     <div>
@@ -32,7 +47,7 @@ const ProjectGallery = () => {
       <div className="project-gallery-container">
         <button className="gallery-btn" onClick={prev}>&lt;</button>
         <a href={projects[current].url} target="_blank" rel="noopener noreferrer">
-          <img src={projects[current].image} alt={projects[current].alt} className="project-image" />
+          <img src={projects[current].image} alt={projects[current].alt} className="project-image" style={imageStyle} />
         </a>
         <button className="gallery-btn" onClick={next}>&gt;</button>
       </div>

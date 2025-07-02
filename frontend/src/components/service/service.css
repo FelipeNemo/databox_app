@@ -1,7 +1,7 @@
 /* Detalhes dos serviços */
 /* Alinha detalhamento com o restante da página */
 .service-details-section {
-  margin-top: 80px;
+  margin-top: 50px;
   display: flex;
   flex-direction: column;
   gap: 64px;
@@ -18,7 +18,7 @@
   justify-content: center;
   gap: 48px;
   padding: 48px 0;
-  border-bottom: 1px solid #eee;
+  /* Removido border-bottom para eliminar separação excessiva entre os blocos */
 }
 
 .service-detail-content {
@@ -32,7 +32,7 @@
   font-size: 32px;
   font-weight: normal;
   color: #040202;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 
 .service-detail-content p {
@@ -47,32 +47,31 @@
 }
 
 .service-detail-image img {
-  max-width: 800px;
-  width: 100%;
-  height: 700px;
+  max-width: 700px;
+  width: 80%;
+  height: 500px;
   object-fit: cover;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10);
+  border-radius: 3px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.537);
 }
 .service-container {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    border-radius: 6px;
+    gap: 12px;
     padding: 16px;
     cursor: pointer;
     transition: all 0.3s ease-out;
-    /* Glassmorphism */
+    /* Glassmorphism color: #fff;*/
     background: rgba(0, 0, 0, 0);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 4px solid rgba(255, 255, 255, 0.18);
-    color: #fff;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    
 }
 
 .service-container:hover {
-    background: rgba(23, 77, 178, 0.43);
+    background: #1d59c876;
     transition: all 0.3s ease-out;
     transform: scale(1.1) translateZ(0);
 }
