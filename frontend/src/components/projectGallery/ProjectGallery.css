@@ -11,7 +11,10 @@
   align-items: center;
   justify-content: center;
   gap: 24px;
-  margin: 48px 0;
+  margin: 42px auto;
+  max-width: 100vw;
+  padding: 0 0;
+  width: 100%;
   background: transparent;
   box-shadow: none;
   backdrop-filter: none;
@@ -22,14 +25,17 @@
 
 
 .project-image {
-  width: 1300px;
-  height: 600px;
-  max-width: 90vw;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px 0 rgba(255, 137, 2, 0.29);
+  width: 20vw;
+  aspect-ratio: 16/9;
+  max-width: 80px;
+  min-width: 77vw;
+  max-height: 700px;
+  border-radius: 3px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.655);
   cursor: pointer;
   transition: transform 0.2s;
   display: block;
+  object-fit: cover;
 }
 
 .project-image:hover {
@@ -37,15 +43,15 @@
 }
 
 .gallery-btn {
-  background: #e3e7ee;
-  color: #fff;
+  background: #3464b6;
+  color: #faf7f7;
   border: none;
   border-radius: 50%;
   width: 40px;
   height: 40px;
   font-size: 1.5rem;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(242, 114, 9, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.721);
   transition: background 0.2s;
 }
 

@@ -1,5 +1,11 @@
+body {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #fff 0%, #fff 90%, #181818 100%);
+}
 .services-container {
-    background-color: rgba(62, 161, 255, 0.04);
+    background: rgba(255,255,255,0.96); /* Fundo branco quase sólido para destaque */
+    border-radius: 18px;
+    box-shadow: 0 4px 32px 0 rgba(31,38,135,0.10);
 }
 
 .services-container>h3 {
@@ -7,21 +13,27 @@
     font-size: 32px;
     font-weight: normal;
     margin-bottom: 42px;
+    color: #111; /* Título dos serviços em preto */
 }
 
 .services-wrapper {
     display: flex;
-    gap: 42px;
+    gap: 52px;
     flex-wrap: wrap;
     justify-content: center;
 }
 
 /* Diminui o tamanho das imagens dos serviços */
 .services-wrapper img {
-    width: 80px;
+    width: 85px;
     height: auto;
     display: block;
     margin-left: auto;
     margin-right: auto;
 }
 
+
+/* Títulos e textos dos cards de serviço em preto */
+.service-title, .service-body, .services-wrapper h4, .services-wrapper p {
+    color: #5C5C5C;
+}
