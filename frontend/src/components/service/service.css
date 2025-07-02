@@ -1,14 +1,20 @@
 /* Detalhes dos serviços */
+/* Alinha detalhamento com o restante da página */
 .service-details-section {
   margin-top: 80px;
   display: flex;
   flex-direction: column;
   gap: 64px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
 }
 
+/* Alinha texto com o topo da imagem e aumenta largura da imagem */
 .service-detail-block {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   gap: 48px;
   padding: 48px 0;
@@ -20,9 +26,12 @@
   max-width: 500px;
 }
 
+/* Título igual ao Serviços disponíveis */
 .service-detail-content h4 {
-  font-size: 2rem;
-  color: #174EB2;
+  text-align: center;
+  font-size: 32px;
+  font-weight: normal;
+  color: #040202;
   margin-bottom: 16px;
 }
 
@@ -38,8 +47,10 @@
 }
 
 .service-detail-image img {
-  max-width: 320px;
+  max-width: 800px;
   width: 100%;
+  height: 700px;
+  object-fit: cover;
   border-radius: 16px;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10);
 }
