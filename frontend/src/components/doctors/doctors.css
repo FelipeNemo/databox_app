@@ -1,0 +1,54 @@
+.doctors-container {
+    position: relative;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.doctors-container>h3 {
+    text-align: center;
+    font-size: 32px;
+    font-weight: normal;
+    margin-bottom: 30px;
+}
+
+.doctors-container>p {
+    text-align: center;
+    color: #5C5C5C;
+}
+
+.sphere2, .sphere3 {
+    position: absolute;
+    z-index: -1;
+}
+
+.sphere2 {
+    left: -28px;
+    top: 77px;
+}
+
+.sphere3 {
+    right: 0;
+    top: 250px;
+}
+
+.doctors-wrapper {
+    padding: 44px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 42px;
+    justify-content: center;
+}
+
+.doctors-container>button {
+    padding: 20px 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    color: #174EB2;
+    background-color: #FFF;
+    border: 1px solid #174EB2;
+}
+
+.doctors-container>button:hover {
+    color: #FFF;
+    background-color: #174EB2;
+}

@@ -1,0 +1,93 @@
+.banner-graphic img {
+  animation: rotate 200s linear infinite;
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+/* Centraliza o banner e limita a largura para alinhar com o restante da página */
+/* Centraliza o banner, limita largura e aplica glassmorphism */
+.banner-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 0;
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-bottom: 64px; /* ou o valor que desejar */
+    width: 100%;
+    box-sizing: border-box;
+    background: rgba(0, 0, 0, 0);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 4px solid rgba(255, 255, 255, 0.1);
+}
+
+.banner-content {
+    padding: 0 77px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+}
+
+.banner-heading>h2 {
+    font-size: 52px;
+}
+
+.banner-subheading>p {
+    font-size: 18px;
+    font-weight: 500;
+    color: #5C5C5C;
+}
+
+.banner-buttons {
+    display: flex;
+    margin: 20px 0 0 10px;
+    gap: 28px;
+}
+
+.banner-buttons>button {
+    padding: 20px 40px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.banner-appointment-button {
+    background-color: #174EB2;
+    color: #FFF;
+}
+
+.banner-learn-button {
+    color: #174EB2;
+    background-color: #FFF;
+    border: 1px solid #174EB2;
+}
+
+.banner-learn-button:hover {
+    color: #f5eded;
+    background-color: #174EB2;
+}
+
+
+.banner-graphic {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+
+/* Aumenta apenas a imagem ellipse.png sem aumentar o banner */
+.banner-graphic>img:first-child {
+    width: 150%;
+    max-width: 1500px;
+    height: auto;
+
+}
+
+

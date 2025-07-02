@@ -1,0 +1,27 @@
+.services-container {
+    background-color: rgba(62, 161, 255, 0.04);
+}
+
+.services-container>h3 {
+    text-align: center;
+    font-size: 32px;
+    font-weight: normal;
+    margin-bottom: 42px;
+}
+
+.services-wrapper {
+    display: flex;
+    gap: 42px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Diminui o tamanho das imagens dos serviços */
+.services-wrapper img {
+    width: 80px;
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+

@@ -1,0 +1,3 @@
+import ProjectGallery from "../components/projectGallery/ProjectGallery";
+// ...existing code...
+// Adicione <ProjectGallery /> logo abaixo dos serviços
