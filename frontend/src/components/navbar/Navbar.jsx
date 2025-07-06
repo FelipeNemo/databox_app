@@ -11,11 +11,11 @@ const Navbar = () => {
       </div>
 
       <div className="nav-items">
-        <h3>Solução</h3>
-        <h3>Contrato</h3>
-        <h3>Análise</h3>
-        <h3>Integração</h3>
-        <h3>Cliente</h3>
+        <h3>Para Empresas</h3>
+        <h3>Para Estudantes</h3>
+        <h3>Soluções</h3>
+        <h3>Artigos</h3>
+        <h3>Contato</h3>
       </div>
       <div className="side-nav-items">
         <h3>Login</h3>

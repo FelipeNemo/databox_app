@@ -1,10 +1,10 @@
 .footer-container {
-    background-color: #063385;
+    background-color: #13244436;
     display: flex;
     justify-content: space-evenly;
-    color: #FFF;
+    color: #f5f5f5;
     padding: 42px;
-    height: 310px;
+    height: 350px;
     position: relative;
 }
 
@@ -16,14 +16,14 @@
 }
 
 .footer-logo>img {
-    width: 124px;
+    width: 180px;
 }
 
 .footer-lists {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 25px;
 }
 
 .footer-lists>li:first-child {
@@ -45,7 +45,7 @@
 }
 
 .footer-ellipse2 {
-    left: 30px;
+    left: 40px;
 }
 
 

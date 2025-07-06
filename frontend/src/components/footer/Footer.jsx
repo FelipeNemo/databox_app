@@ -10,46 +10,39 @@ const Footer = () => {
 
                 <div className="footer-logo">
                     <img src={footerImage} alt="footer-logo" />
-                    <p>We aew a medicial clinic,<br />helping you for a better life.</p>
+                    <p>Ciências de dados<br />para negócios de impacto.</p>
                 </div>
 
                 <div className="footer-medic">
                     <ul className="footer-lists">
-                        <li>Medic</li>
+                        <li>Dados</li>
                         <li>Home</li>
-                        <li>Medical Care</li>
-                        <li>Medical Health</li>
-                        <li>Medical Test</li>
-                        <li>Medical Lab</li>
+                        <li>Data Lab</li>
+                        <li>IA Lab</li>
                     </ul>
                 </div>
-
                 <div className="footer-about">
                     <ul className="footer-lists">
-                        <li>About</li>
-                        <li>Medic</li>
-                        <li>Vision & Mission</li>
-                        <li>Careers</li>
-                        <li>Support</li>
+                        <li>Sobre</li>
+                        <li>Suporte</li>
                         <li>FAQ</li>
                     </ul>
                 </div>
 
                 <div className="footer-social-media">
                     <ul className="footer-lists">
-                        <li>Social Media</li>
-                        <li>Twitter / X</li>
-                        <li>Facebook</li>
+                        <li>Redes Sociais</li>
+                        <li>Github</li>
+                        <li>LinkedIn</li>
                         <li>Instagram</li>
+                        <li>Tiktok</li>
                     </ul>
                 </div>
-
                 <div className="footer-contact">
                     <ul className="footer-lists">
-                        <li>Contact</li>
-                        <li>Austin Texas, 4567 Road Palm</li>
-                        <li>+00 123 456 789</li>
-                        <li>medi@test.com</li>
+                        <li>Contato</li>
+                        <li>PUCRS - Av. Ipiranga, 6681 - Partenon, Porto Alegre - RS, 90619-900</li>
+                        <li>databoxbrazil@gmail.com</li>
                     </ul>
                 </div>
 
@@ -59,7 +52,7 @@ const Footer = () => {
             </div>
 
             <div className="footer-bottom">
-                <p>&copy; Medic 2028</p>
+                <p>&copy; Databox 2028</p>
                 <p>Legal Policies</p>
                 <p>Sitemap</p>
                 <p>Cookies</p>
