@@ -1,74 +1,115 @@
+/* Container principal da navbar */
 .navbar-container {
-    margin: 32px auto 0 auto;
+    margin: 16px auto 0 auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
     max-width: 1200px;
     width: 100%;
-    padding: 16px 32px;
+    padding: 8px 12px;
     background: transparent;
     box-shadow: none;
-    border-radius: 16px;
+    border-radius: 12px;
     border: none;
 }
 
-/* Logo maior */
-.logo>img {
-    width: 320px;
-    max-width: 220px;
-    height: auto;
-    cursor: pointer;
+.logo img {
+  width: 250px !important;
+  height: auto !important;
+  object-fit: contain;
+  display: block;
 }
 
+/* Itens centrais da navbar */
 .nav-items {
     display: flex;
     gap: 30px;
 }
 
-/* Botões e textos pretos */
-.nav-items>h3 {
+/* Itens laterais (login e ícone de busca) */
+.side-nav-items {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Ícone de busca menor */
+.side-nav-items > img {
+    width: 24px;
+    cursor: pointer;
+}
+
+/* Estilo base dos links da navbar */
+.nav-items a,
+.side-nav-items a {
+    text-decoration: none;
+}
+
+/* Estilo dos botões em <h3> */
+.nav-items > h3,
+.nav-items a h3,
+.side-nav-items > h3,
+.side-nav-items a h3 {
     font-weight: 400;
     font-size: 16px;
     cursor: pointer;
     color: #111;
     background: none;
     border: none;
-    padding: 8px 16px;
-    border-radius: 8px;
+    padding: 6px 6px;
+    border-radius: 6px;
     transition: background 0.2s;
 }
 
 /* Hover azul */
-.nav-items>h3:hover {
+.nav-items > h3:hover,
+.nav-items a h3:hover,
+.side-nav-items > h3:hover,
+.side-nav-items a h3:hover {
     color: #174EB2;
     background: #e3e7ee;
 }
 
-.side-nav-items {
-    display: flex;
-    align-items: center;
-    gap: 16px;
+.search-input {
+  padding: 6px 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  transition: width 0.3s ease;
+  width: 160px;
 }
 
-/* Login preto */
-.side-nav-items>h3 {
-    font-size: 16px;
-    font-weight: 400;
-    color: #111;
-    cursor: pointer;
-    background: none;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 8px;
-    transition: background 0.2s;
+.search-icon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
 }
 
-.side-nav-items>h3:hover {
-    color: #174EB2;
-    background: #e3e7ee;
+/* Wrapper do input (define área para transição) */
+.search-wrapper {
+  width: 0;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
 }
 
-.side-nav-items>img {
-    width: 30px;
-    cursor: pointer;
+/* Quando ativo (JS adiciona classe "show") */
+.search-wrapper.show {
+  width: 160px;
+  opacity: 1;
+  visibility: visible;
+  margin-right: 8px;
+}
+
+/* Estilo do input */
+.search-input {
+  width: 100%;
+  padding: 6px 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  box-sizing: border-box;
 }

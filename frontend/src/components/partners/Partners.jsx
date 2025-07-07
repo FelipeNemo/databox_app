@@ -8,8 +8,8 @@ import partner5 from "../../assets/images/partner5.png"
 const Partners = () => {
   return (
     <div className="partners-container">
-        <h3>Nossos Parceiros de Saúde</h3>
-        <p>Organizações de pesquisa que colaboram em inovação médica, saúde e desenvolvimento de novas tecnologias e tratamentos.</p>
+        <h3>Ferramentas</h3>
+        <p>Ferramentas usadas para pesquisa e desenvolvimento.</p>
         <div className="partners-wrapper">
             <div className="partner-logo">
                 <img src={partner1} alt="parceiro1" />
