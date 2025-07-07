@@ -9,7 +9,7 @@ const Banner = () => {
             <div className="banner-content">
 
                 <div className="banner-heading">
-                    <h2>Tranforme seu<br/> negócio com<br/>Inteligência Artificial</h2>
+                    <h2>Transforme seu<br/> negócio com<br/>Inteligência Artificial</h2>
                 </div>
 
                 <div className="banner-subheading">
