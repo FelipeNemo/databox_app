@@ -1,0 +1,46 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 16px;
+}
+
+.form-box {
+  background: #fff;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-box input,
+.form-box select {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.form-box button {
+  background-color: #174EB2;
+  color: white;
+  border: none;
+  padding: 10px;
+  font-size: 15px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.toggle-text {
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.toggle-text span {
+  color: #174EB2;
+  cursor: pointer;
+  font-weight: bold;
+}
