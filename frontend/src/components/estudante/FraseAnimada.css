@@ -1,0 +1,69 @@
+.typing-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* tudo alinhado à esquerda */
+  width: 100%;
+  max-width: 720px;
+  padding: 40px 40px;
+  font-family: 'Inter', sans-serif;
+  box-sizing: border-box;
+  margin-left: 60px;
+
+}
+
+
+.titulo-fixo {
+  font-size: 18px;
+  font-weight: 600;
+  color: #174eb2;
+  margin-bottom: 12px;
+}
+
+.typing-wrapper {
+  font-size: 54px;
+  font-weight: 300;
+  color: #222;
+  min-height: 100px;
+  white-space: nowrap;
+  transition: all 0.1s ease-in-out;
+  overflow: hidden;
+  border-right: 3px solid #174eb2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 22px;
+  margin-bottom: 30px;
+}
+
+
+.inline-typing-img {
+  width: 100px;                /* diminui o tamanho da imagem */
+  height: auto;
+  vertical-align: middle;     /* garantir alinhamento vertical */
+  transform: translateY(-12px); 
+}
+
+.descricao-texto {
+  font-size: 16px;
+  color: #444;
+  line-height: 1.5;
+  max-width: 600px;
+  margin-top: 0;
+}
+.texto-fixo-abaixo {
+  font-size: 16px;
+  color: #444;
+  line-height: 1.5;
+  max-width: 720px;
+  margin: 0;   /* remove margem padrão do <p> */
+  padding: 0;  /* remove padding, se houver */
+  text-align: left;
+}
+
+/* Cursor piscando */
+@keyframes blink {
+  350% {
+    border-color: transparent;
+  }
+}
+

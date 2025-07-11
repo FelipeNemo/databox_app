@@ -1,0 +1,81 @@
+.contato-container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 16px;
+  background-color: #fdfdfd;
+}
+
+.contato-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contato-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 15px;
+  color: #111;
+}
+
+.contato-form input,
+.contato-form select,
+.contato-form textarea {
+  padding: 10px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-top: 6px;
+  resize: vertical;
+}
+
+.abas {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.aba {
+  padding: 8px 18px;
+  background-color: #eee;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.aba.ativa {
+  background-color: #174EB2;
+  color: #fff;
+}
+
+.btn-submit {
+  margin-top: 24px;
+  align-self: center;
+  padding: 10px 24px;
+  background-color: #174EB2;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.btn-submit:hover {
+  background-color: #174EB2;
+}
+
+.btn-submit:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+.status-msg {
+  text-align: center;
+  margin-top: 12px;
+  color: #333;
+  font-weight: 500;
+}

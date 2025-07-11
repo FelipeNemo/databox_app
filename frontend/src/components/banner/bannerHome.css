@@ -1,0 +1,38 @@
+/* Wrapper que organiza texto e login lado a lado */
+.banner-home-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 32px;
+  gap: 40px;
+  flex-wrap: wrap; /* Para responsividade */
+}
+
+/* Coluna de texto à esquerda */
+.banner-home-text {
+  flex: 1;
+  min-width: 300px;
+}
+
+.banner-home-text .banner-heading h2 {
+  font-size: 42px;
+  margin-bottom: 16px;
+}
+
+.banner-home-text .banner-subheading p {
+  font-size: 18px;
+  color: #5C5C5C;
+  font-weight: 500;
+  max-width: 500px;
+}
+
+/* Login alinhado à direita */
+.banner-home-login {
+  flex: 1;
+  min-width: 280px;
+  max-width: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
