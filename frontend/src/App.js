@@ -6,14 +6,13 @@ import Banner from './components/banner/Banner';
 import BannerHome from './components/banner/BannerHome'; // ← NOVO
 import Partners from './components/partners/Partners';
 import Services from './components/services/Services';
-import Estudantes from './components/estudante/Estudante';
 import Login from './components/login/Login';
-import Planos from './components/planos/Planos'; // ajuste o caminho conforme sua pasta
-import Artigos from './components/artigos/Artigos'; // ajuste o caminho conforme sua estrutura
+import Sobre from './components/sobre/Sobre'; 
+import Artigos from './components/artigos/Artigos'; 
 import Contato from './components/contato/Contato';
 import Barra from './components/barra/Barra';
 
-
+import Estudante from './components/estudante/Estudante';
 
 
 const Empresas = () => (
@@ -43,8 +42,8 @@ function App() {
           }
         />
         <Route path="/empresas" element={<Empresas />} />
-        <Route path="/estudantes" element={<Estudantes />} />
-        <Route path="/planos" element={<Planos />} />
+        <Route path="/estudantes" element={<Estudante />} />
+        <Route path="/sobre" element={<Sobre />} />
         <Route path="/artigos" element={<Artigos />} />
         <Route path="/contato" element={<Contato />} />
         <Route path="/login" element={<Login />} />

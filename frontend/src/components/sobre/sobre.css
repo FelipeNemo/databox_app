@@ -1,0 +1,58 @@
+.planos-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.titulo-centralizado {
+  font-size: 2rem;
+  margin-top: 24px;
+}
+
+.intro-centralizada {
+  max-width: 800px;
+  margin: 16px auto 32px auto;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #444;
+}
+
+.planos-grid.dois-cards {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  margin-top: 32px;
+}
+
+.plano-card {
+  position: relative;
+  flex: 1 1 400px;
+  max-width: 500px;
+  background-color: #ffffff;
+  padding: 32px 24px 32px 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.plano-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Ícone no topo, canto esquerdo */
+.card-icon-top {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  position: relative;
+  top: 0;
+  left: 0;
+  margin-bottom: 12px;
+  align-self: flex-start;
+}

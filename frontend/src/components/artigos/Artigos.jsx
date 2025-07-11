@@ -5,7 +5,7 @@ import artigo1 from '../../assets/images/artigo1.png';
 const artigosData = [
   {
     id: 1,
-    titulo: "Análise de Dados no Agronegócio",
+    titulo: "Interompabilidade em Sistemas de Hospitalares",
     descricao: "Estudo aprofundado sobre o uso de dados para otimizar produção e logística.",
     linkLattes: "https://lattes.cnpq.br/1234567890123456",
     imagem: artigo1

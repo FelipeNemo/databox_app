@@ -1,4 +1,4 @@
-import "./banner.css";
+import "./bannerHome.css";
 import Login from "../login/Login";
 
 const BannerHome = () => {

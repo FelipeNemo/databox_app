@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Partners from "../partners/Partners";
 import Login from "../login/Login";
 import Barra from "../barra/Barra";
+import FraseAnimada from "./FraseAnimada";
 import "./estudante.css";
 
 const Estudante = () => {
@@ -12,48 +13,22 @@ const Estudante = () => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
-  const faqs = [
-    {
-      question: "O que vou aprender gratuitamente?",
-      answer:
-        "Você vai aprender como usar ferramentas de IA, criar dashboards, desenvolver agentes inteligentes e muito mais.",
-    },
-    {
-      question: "Preciso ter conhecimento técnico?",
-      answer:
-        "Não! Os conteúdos são voltados tanto para iniciantes quanto para quem já está na área de dados.",
-    },
-    {
-      question: "Como me inscrevo?",
-      answer:
-        "Clique no botão 'Comece o teste já' e faça seu cadastro com nome, email e tipo de conta.",
-    },
-  ];
-
   return (
     <div className="estudante-page">
-      {/* Barra suspensa no topo da página estudante */}
+      {/* Frase animada antes da Barra */}
+      <FraseAnimada />
+
+      {/* Botão entre FraseAnimada e Barra */}
+      <div className="btn-start-wrapper">
+        <button className="btn-primary" onClick={() => setLoginVisible(true)}>
+          Começar agora
+        </button>
+      </div>
+
+      {/* Barra de navegação */}
       <Barra />
 
-      <section className="intro">
-        <div className="intro-subheading">
-          <h1>Nossa oferta especial para estudantes</h1>
-          <p>
-            Acesse gratuitamente os conteúdos da Databox para se desenvolver profissionalmente,
-            aprenda a usar IA, construir dashboards, criar agentes de forma sem custos.
-          </p>
-          <button className="btn-primary" onClick={() => setLoginVisible(true)}>
-            Comece o teste já
-          </button>
-        </div>
-      </section>
-
-      {loginVisible && (
-        <div className="login-modal">
-          <Login />
-        </div>
-      )}
-
+      {/* Cards explicativos logo abaixo da barra */}
       <section className="cards-section">
         <div className="card">
           <h3>Prepare-se pra provas</h3>
@@ -75,40 +50,47 @@ const Estudante = () => {
         </div>
       </section>
 
+      {/* Seção de parceiros */}
       <section className="partners-section">
         <Partners />
       </section>
 
+      {/* Seção de perguntas frequentes */}
       <section className="faq-section">
         <h2>Perguntas Frequentes</h2>
         <div className="faq-list">
-          {faqs.map((faq, index) => (
-            <div className="faq-item" key={index}>
-              <button className="faq-question" onClick={() => toggleFAQ(index)}>
+          {[
+            {
+              question: "O que vou aprender gratuitamente?",
+              answer: "Ferramentas de IA, criação de dashboards, agentes, e muito mais.",
+            },
+            {
+              question: "Preciso ter conhecimento técnico?",
+              answer: "Não! É feito para iniciantes também.",
+            },
+            {
+              question: "Como me inscrevo?",
+              answer: "Clique no botão 'Comece o teste já' e preencha seu cadastro.",
+            },
+          ].map((faq, i) => (
+            <div className="faq-item" key={i}>
+              <button className="faq-question" onClick={() => toggleFAQ(i)}>
                 {faq.question}
               </button>
-              {openIndex === index && (
-                <div className="faq-answer">{faq.answer}</div>
-              )}
+              {openIndex === i && <div className="faq-answer">{faq.answer}</div>}
             </div>
           ))}
         </div>
       </section>
+
+      {/* Modal de login */}
+      {loginVisible && (
+        <div className="login-modal">
+          <Login />
+        </div>
+      )}
     </div>
   );
 };
 
 export default Estudante;
-
-
-
-
-
-
-
-
-
-
-
-
-
