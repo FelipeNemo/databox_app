@@ -32,21 +32,21 @@ const Estudante = () => {
       <section className="cards-section">
         <div className="card">
           <h3>Prepare-se pra provas</h3>
-          <p>✓ Gere quizzes e simulados automaticamente</p>
-          <p>✓ Transforme PDFs em guias de estudo</p>
+          <p>✓ Desenvolva sua lógica de programação </p>
+          <p>✓ Guie seu estudo para IA</p>
           <p>✓ Receba resumos e explicações por etapas</p>
         </div>
         <div className="card">
-          <h3>Se prepare para o mercado</h3>
+          <h3>Prepare-se para o mercado</h3>
           <p>✓ Aprenda a montar dashboards com IA</p>
           <p>✓ Desenvolva projetos com dados reais</p>
           <p>✓ Construa agentes que automatizam tarefas</p>
         </div>
         <div className="card">
-          <h3>Conheça outras pessoas que estão na mesma jornada</h3>
+          <h3>Faça conexões</h3>
           <p>✓ Participe de desafios em grupo</p>
           <p>✓ Compartilhe projetos e receba feedback</p>
-          <p>✓ Cresça com uma comunidade de estudantes</p>
+          <p>✓ Cresça com uma comunidade de profissionais de IA</p>
         </div>
       </section>
 

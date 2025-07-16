@@ -2,19 +2,18 @@
 
 import "./banner.css";
 import ellipse from "../../assets/images/ellipse.png";
-import doctor from "../../assets/images/banner-doctor.png";
 
 const Banner = () => {
   const handleFaleConosco = () => {
-    window.location.href = "http://localhost:3002/contato";
+    window.location.href = "http://localhost:3000/contato";
   };
 
   const handleSaibaMais = () => {
-    window.location.href = "http://localhost:3002/sobre";
+    window.location.href = "http://localhost:3000/sobre";
   };
 
   return (
-    <div className="banner-container">
+    <div className="banner-container-empresa">
       <div className="banner-content">
         <div className="banner-heading">
           <h2>
@@ -26,11 +25,10 @@ const Banner = () => {
 
         <div className="banner-subheading">
           <p>
-            Melhore a tomada de decisão do seu negócio com método científico,
+            Melhore sua tomada de decisão com método científico,
             estatística e computação.
           </p>
         </div>
-
         <div className="banner-buttons">
           <button
             className="banner-appointment-button"

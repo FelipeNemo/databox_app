@@ -1,6 +1,8 @@
 import "./bannerHome.css";
 import Login from "../login/Login";
 
+
+
 const BannerHome = () => {
   return (
     <div className="banner-container">
@@ -13,7 +15,7 @@ const BannerHome = () => {
           </div>
 
           <div className="banner-subheading">
-            <p>Acesse sua conta ou crie uma nova para explorar nossos recursos de IA e dados aplicados.</p>
+            <p>Acesse sua conta gratuitamente <br /> para explorar nossos recursos de IA.</p>
           </div>
         </div>
 

@@ -8,7 +8,7 @@
 }
 /* Centraliza o banner e limita a largura para alinhar com o restante da página */
 /* Centraliza o banner, limita largura e aplica glassmorphism */
-.banner-container {
+.banner-container-empresa {
     display: flex;
     align-items: center;
     justify-content: center;
