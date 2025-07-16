@@ -36,3 +36,31 @@
   justify-content: center;
   align-items: center;
 }
+
+.banner-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+    max-width: 1200px;
+    margin: 0 auto 64px auto;
+    width: 100%;
+    box-sizing: border-box;
+
+    /* Estilo de fundo com imagem */
+    background-image: url('../../assets/images/fundo.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* efeito parallax opcional */
+
+    /* Glassmorphism */
+    background-color: rgba(255, 255, 255, 0.1); /* fallback */
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.537);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 3px solid rgba(255, 255, 255, 0.1);
+}
+
+
+
