@@ -17,9 +17,9 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'jazzmin',
+    'rest_framework_simplejwt',  # ← vírgula aqui
     'userauths.apps.UserauthsConfig',
 
     'django.contrib.admin',
@@ -28,11 +28,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders', # add CORS
-    'rest_framework', # mandar para o front
+    'corsheaders',
+    'rest_framework',
     'api',
-    #'userauths',
+    # 'userauths',
 ]
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -207,3 +208,5 @@ JAZZMIN_UI_TWEAKS = {
     },
     "actions_sticky_top": True
 }
+
+ROOT_URLCONF = 'core.urls'
