@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "./login.css";
 
 const Login = () => {
   const [isRegistering, setIsRegistering] = useState(false);
+  const navigate = useNavigate();
 
   // Estados para Login
   const [usernameLogin, setUsernameLogin] = useState("");
@@ -22,21 +24,43 @@ const Login = () => {
   };
 
   // LOGIN
-  const handleLogin = async () => {
-    try {
-      const response = await axios.post("http://127.0.0.1:8000/auth/login/", {
-        username: usernameLogin,
-        password: senhaLogin,
-      });
 
-      localStorage.setItem("token", response.data.access);
-      alert("Login realizado com sucesso!");
-    } catch (error) {
-      alert(
-        error.response?.data?.error || "Usuário ou senha incorretos ou erro na conexão"
-      );
+
+const handleLogin = async () => {
+  try {
+    const response = await axios.post("http://127.0.0.1:8000/auth/login/", {
+      username: usernameLogin,
+      password: senhaLogin,
+    });
+
+    localStorage.setItem("token", response.data.access);
+    localStorage.setItem("tipo_conta", response.data.tipo_conta); // 👈 salvar tipo
+
+    alert("Login realizado com sucesso!");
+
+    // Redirecionamento baseado no tipo
+    switch (response.data.tipo_conta) {
+      case "empresa":
+        navigate("/area-empresa");
+        break;
+      case "estudante":
+        navigate("/area-estudante");
+        break;
+      case "admin":
+        navigate("/area-administrador");
+        break;
+      default:
+        navigate("/area-helpers");
+        break;
     }
-  };
+  } catch (error) {
+    alert(
+      error.response?.data?.error ||
+      "Usuário ou senha incorretos ou erro na conexão"
+    );
+  }
+};
+
 
   // CADASTRO
   const handleRegister = async () => {
@@ -57,6 +81,7 @@ const Login = () => {
         telefone,
         email: emailCadastro,
         password: senhaCadastro,
+        tipo_conta: tipoConta, 
       });
 
       alert("Cadastro realizado com sucesso!");
@@ -83,7 +108,7 @@ const Login = () => {
           <>
             <input
               type="text"
-              placeholder="Nome de usuário"
+              placeholder="Email ou Nome de usuário"
               value={usernameLogin}
               onChange={(e) => setUsernameLogin(e.target.value)}
             />
