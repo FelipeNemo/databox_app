@@ -1,0 +1,40 @@
+.topbar-adm {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 60px;
+  background-color: rgba(0, 0, 0, 0.6); /* preto fosco com transparência */
+  backdrop-filter: blur(6px); /* efeito moderno de vidro fosco */
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+}
+
+.topbar-left .topbar-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.topbar-button span {
+  margin-left: 8px;
+}
+
+.topbar-icon {
+  font-size: 20px;
+  margin-left: 20px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.topbar-icon:hover {
+  color: #147ae1;
+}

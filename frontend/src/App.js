@@ -1,4 +1,6 @@
-import { Routes, Route } from "react-router-dom";
+import React from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
+
 import './App.css';
 import Navbar from './components/navbar/Navbar';
 import Footer from './components/footer/Footer';
@@ -14,6 +16,17 @@ import Barra from './components/barra/Barra';
 
 import Estudante from './components/estudante/Estudante';
 
+import AreaEmpresa from './components/Area/AreaEmpresa/AreaEmpresa';
+import AreaEstudante from './components/Area/AreaEstudante/AreaEstudante';
+import AreaAdministrador from './components/Area/AreaAdm/AreaAdm';
+import AreaHelpers from './components/Area/AreaHelpers/AreaHelpers';
+
+import UserLayout from './components/layouts/UserLayout';
+
+
+
+import TopbarAdm from './components/topbarAdm/TopbarAdm';
+
 
 const Empresas = () => (
   <>
@@ -27,17 +40,22 @@ const Empresas = () => (
 );
 
 
+
 function App() {
+  const location = useLocation();
+
+  // Aqui você verifica se a rota começa com '/area-' para esconder Navbar e Footer
+  const isPrivateRoute = location.pathname.startsWith("/area-");
+
   return (
     <>
-      <Navbar />
+      {!isPrivateRoute && <Navbar />}
       <Routes>
         <Route
           path="/"
           element={
             <>
-              <BannerHome /> {/* ← Novo banner para a home */}
-
+              <BannerHome />
             </>
           }
         />
@@ -47,8 +65,16 @@ function App() {
         <Route path="/artigos" element={<Artigos />} />
         <Route path="/contato" element={<Contato />} />
         <Route path="/login" element={<Login />} />
+
+        {/* Rotas privadas */}
+        <Route path="/area-empresa" element={<AreaEmpresa />} />
+        <Route path="/area-estudante" element={<AreaEstudante />} />
+        <Route path="/area-administrador" element={<AreaAdministrador />} />
+        <Route path="/area-helpers" element={<AreaHelpers />} />
+        <Route path="/admin" element={<AreaAdministrador />} />
+
       </Routes>
-      <Footer />
+      {!isPrivateRoute && <Footer />}
     </>
   );
 }

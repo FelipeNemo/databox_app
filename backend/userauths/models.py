@@ -9,6 +9,11 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=100, null=True, blank=True)
     phone = models.CharField(max_length=100, null=True, blank=True)
+    tipo_conta = models.CharField(
+        max_length=20,
+        choices=[("estudante", "Estudante"), ("empresa", "Empresa"), ("admin", "Admin")],
+        default="estudante"  # ou algum valor padrão
+    )
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
