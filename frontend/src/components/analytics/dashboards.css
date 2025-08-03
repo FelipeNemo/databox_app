@@ -1,0 +1,66 @@
+
+.dashboard-area-adm-main {
+  background-color: #dddddd27;
+  min-height: 100vh;
+  padding: 20px 0px; /* <- mais espaço lateral */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #fff;
+  width: 1250px;
+  margin-left: auto; /* empurra o elemento para a direita */
+  margin-right: -180px;
+}
+
+.dashboard-area-adm-content {
+  width: 100%;
+  
+}
+
+.dashboard-gamification-wrapper {
+  padding: 10px;
+}
+
+.dashboard-cards-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 40px;
+}
+
+.dashboard-gamification-card {
+  background: #dfdfe281;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.dashboard-gamification-card h3 {
+  margin: 0 0 12px;
+  font-weight: 600;
+  font-size: 1.3rem;
+  color: #050606;
+}
+
+.dashboard-gamification-card ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.dashboard-gamification-card ul li {
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+
+.dashboard-gamification-card p {
+  font-size: 1rem;
+  color: #ccc;
+  line-height: 1.4;
+}
+
+@media (max-width: 1240px) {
+  .dashboard-cards-container {
+    grid-template-columns: 1fr;
+  }
+}

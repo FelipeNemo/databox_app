@@ -1,0 +1,49 @@
+.modal-inventario {
+  background: #ece6e600;
+  color: white;
+  padding: 20px;
+  
+  max-width: 700px;
+  margin: auto;
+  font-family: sans-serif;
+}
+
+.botoes-abas {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.botoes-abas button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: #4e697100;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.botoes-abas button.ativo {
+  background: #00b3ff;
+}
+
+.painel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.item-grid {
+  background: rgba(0, 0, 0, 0.024);
+  padding: 10px;
+  
+  text-align: center;
+  border: 0px solid #00ccff;
+  transition: transform 0.2s;
+}
+
+.item-grid:hover {
+  transform: scale(1.05);
+  background: #019cef;
+}

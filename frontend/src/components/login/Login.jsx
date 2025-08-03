@@ -39,7 +39,7 @@ const handleLogin = async () => {
     alert("Login realizado com sucesso!");
 
     // Redirecionamento baseado no tipo
-    switch (response.data.tipo_conta) {
+    switch (response.data.tipo_conta) {  
       case "empresa":
         navigate("/area-empresa");
         break;

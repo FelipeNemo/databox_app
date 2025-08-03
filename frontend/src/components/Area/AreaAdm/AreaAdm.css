@@ -1,0 +1,52 @@
+/* Área principal - ocupa o restante da tela */
+.area-adm-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+
+.area-adm-content {
+  flex: 1;
+  background: rgba(255, 254, 254, 0);
+  overflow: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column; /* <-- ESSENCIAL para empilhar verticalmente */
+  justify-content: flex-start;
+  align-items: center;    /* Se quiser centralizar os conteúdos na horizontal */
+  padding: 100px 20px 20px;
+  gap: 1rem;              /* Espaço entre GamificationStats e Dashboards */
+}
+
+.gamification-card {
+  background-color: #1e1e2f;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  flex: 1;                    /* Ocupa espaço igual */
+  min-width: 250px;           /* Garante responsividade */
+  max-width: 400px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  
+}
+
+.gamification-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  transform: translateX(-20px);
+}
+
+.cards-container {
+  display: flex;
+  justify-content: flex-end; /* <- empurra os cards para a direita */
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.cards-wrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+

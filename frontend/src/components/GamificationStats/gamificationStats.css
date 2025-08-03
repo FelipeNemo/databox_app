@@ -1,0 +1,203 @@
+.gamification-panel h2,
+.mission-panel h2 {
+  text-align: center;       /* centraliza o texto */
+  margin-bottom: 20px;      /* espaçamento embaixo do título */
+  font-weight: 400;         /* mais negrito, opcional */
+  font-size: 1.5rem;        /* ajuste o tamanho se quiser */
+}
+
+
+.gamification-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.gamification-panel-container {
+  display: flex;
+  gap: 40px; /* espaço entre Status e Missão */
+  align-items: stretch;
+  margin-left: 80px;
+  height: auto;
+}
+
+.progress-bar-container {
+  background-color: #ddd;
+  border-radius: 2px;
+  height: 5px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.progress-bar.xp {
+  background-color: #04a6f1;
+  height: 100%;
+}
+
+.progress-bar.health {
+  background-color: #03fc24;
+  height: 100%;
+}
+
+.coin-display {
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+.gamification-wrapper {
+  display: flex;
+  justify-content: center;
+  
+  padding: 10px 40px 0 20px;
+}
+
+.gamification-panel-container {
+  display: flex;
+  gap: 40px; /* espaço entre Status e Missão */
+  align-items: flex-start;
+  margin-left: 0;
+}
+
+.gamification-panel,
+.mission-panel {
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  padding: 20px;
+  width: 460px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.progress-bar-container {
+  background-color: #ddd;
+  border-radius: 2px;
+  height: 5px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.progress-bar.xp {
+  background-color: #04a6f1;
+  height: 100%;
+}
+
+.progress-bar.health {
+  background-color: #03fc24;
+  height: 100%;
+}
+
+.coin-display {
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+.gamification-panel,
+.mission-panel {
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  padding: 20px;
+  width: 600px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+.mission-inline {
+  display: flex;
+  align-items: center;   /* centraliza verticalmente */
+  gap: 10px;             /* espaço entre os elementos */
+}
+
+.mission-title {
+  flex: 1;
+  font-weight: 400; /* menos negrito */
+  font-size: 1rem;  /* diminua o tamanho se quiser */
+}
+
+.mission-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.1);
+  font-size: 16px;
+}
+.mission-panel p {
+  font-size: 16px;
+  margin-bottom: 0px;
+}
+
+.mission-progress-circle {
+  width: 42px;
+  height: 42px;
+  border: 5px solid #ee0404;
+  border-radius: 0%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-bottom: 15px;
+  font-size: 0.85rem;
+  font-weight: 100;
+}
+
+.mission-actions button {
+  margin-right: 8px;
+  margin-bottom: 5px;
+  background-color: #eee;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.mission-actions button:hover {
+  background-color: #564c4c7f;
+}
+
+.mission-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.1);
+  font-size: 16px;
+}
+.mission-panel p {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.mission-progress-circle {
+  width: 42px;
+  height: 42px;
+  border: 5px solid #ee0404;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-bottom: 15px;
+  font-weight: 400;
+}
+
+.mission-actions button {
+  margin-right: 8px;
+  margin-bottom: 5px;
+  background-color: #eee;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.mission-actions button:hover {
+  background-color: #564c4c7f;
+}
