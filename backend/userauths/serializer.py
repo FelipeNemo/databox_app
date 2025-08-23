@@ -1,3 +1,4 @@
+# userauths/serializer.py
 from rest_framework import serializers
 from userauths.models import Profile, User
 

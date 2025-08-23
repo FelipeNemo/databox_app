@@ -1,0 +1,58 @@
+.sidebar-adm {
+  height: 100vh;
+  background-color: #00000078; 
+  backdrop-filter: blur(6px);
+  color: white;
+  transition: width 0.3s ease;
+  overflow: hidden;
+  position: fixed;
+  top: 60px; /* abaixo da topbar */
+  left: 0;
+  z-index: 999;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sidebar-adm.open {
+  width: 250px;
+}
+
+.sidebar-adm.closed {
+  width: 70px;
+}
+
+.toggle-button {
+  margin: 10px 0;
+  cursor: pointer;
+  font-size: 18px;
+  color: white;
+}
+
+
+.sidebar-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 20px;
+  padding: 20px;
+  width: 100%;
+}
+
+.sidebar-buttons button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.sidebar-buttons button:hover {
+  color: #147ae1;
+}

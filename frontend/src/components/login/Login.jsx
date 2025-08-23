@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import api from "../../api/axios"; // substitui axios
+
 import "./login.css";
 
 const Login = () => {
@@ -24,64 +25,63 @@ const Login = () => {
   };
 
   // LOGIN
+  const handleLogin = async () => {
+    try {
+      const response = await api.post("/auth/login/", {
+        username: usernameLogin,
+        password: senhaLogin,
+      });
 
+      // 🔹 Salvar tokens e tipo de conta
+      localStorage.setItem("access", response.data.access);
+      localStorage.setItem("refresh", response.data.refresh);
+      localStorage.setItem("tipo_conta", response.data.tipo_conta);
 
-const handleLogin = async () => {
-  try {
-    const response = await axios.post("http://127.0.0.1:8000/auth/login/", {
-      username: usernameLogin,
-      password: senhaLogin,
-    });
+      alert("Login realizado com sucesso!");
 
-    localStorage.setItem("token", response.data.access);
-    localStorage.setItem("tipo_conta", response.data.tipo_conta); // 👈 salvar tipo
-
-    alert("Login realizado com sucesso!");
-
-    // Redirecionamento baseado no tipo
-    switch (response.data.tipo_conta) {
-      case "empresa":
-        navigate("/area-empresa");
-        break;
-      case "estudante":
-        navigate("/area-estudante");
-        break;
-      case "admin":
-        navigate("/area-administrador");
-        break;
-      default:
-        navigate("/area-helpers");
-        break;
+      // 🔹 Redirecionamento baseado no tipo de conta
+      switch (response.data.tipo_conta) {
+        case "empresa":
+          navigate("/area-empresa");
+          break;
+        case "estudante":
+          navigate("/area-estudante");
+          break;
+        case "admin":
+          navigate("/area-administrador");
+          break;
+        default:
+          navigate("/area-helpers");
+          break;
+      }
+    } catch (error) {
+      alert(
+        error.response?.data?.error ||
+          "Usuário ou senha incorretos ou erro na conexão"
+      );
     }
-  } catch (error) {
-    alert(
-      error.response?.data?.error ||
-      "Usuário ou senha incorretos ou erro na conexão"
-    );
-  }
-};
-
+  };
 
   // CADASTRO
   const handleRegister = async () => {
     try {
       let url = "";
       if (tipoConta === "estudante") {
-        url = "http://127.0.0.1:8000/auth/estudante/register/";
+        url = "/auth/estudante/register/";
       } else if (tipoConta === "empresa") {
-        url = "http://127.0.0.1:8000/auth/empresa/register/";
+        url = "/auth/empresa/register/";
       } else {
         alert("Selecione um tipo de conta válido");
         return;
       }
 
-      const response = await axios.post(url, {
+      await api.post(url, {
         username: usernameCadastro,
         nome,
         telefone,
         email: emailCadastro,
         password: senhaCadastro,
-        tipo_conta: tipoConta, 
+        tipo_conta: tipoConta,
       });
 
       alert("Cadastro realizado com sucesso!");
