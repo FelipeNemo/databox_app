@@ -50,3 +50,10 @@
   justify-content: flex-end;
 }
 
+.area-adm-layout {
+  display: flex;
+  height: 100vh;
+  position: relative; /* importante para posicionamento relativo se necessário */
+  overflow: visible; /* ✅ para não cortar elementos fixos */
+}
+

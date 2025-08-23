@@ -11,6 +11,7 @@ urlpatterns = [
     path('', home_view, name='home'),
     path("admin/", admin.site.urls),
     path("auth/", include("userauths.urls")),  # <- ISSO É ESSENCIAL
+    path("notifications/", include('notifications.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

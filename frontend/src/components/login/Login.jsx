@@ -24,43 +24,42 @@ const Login = () => {
   };
 
   // LOGIN
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/auth/login/", {
+        username: usernameLogin,
+        password: senhaLogin,
+      });
 
+      // 🔹 Salvar tokens e tipo de conta
+      localStorage.setItem("access", response.data.access);
+      localStorage.setItem("refresh", response.data.refresh);
+      localStorage.setItem("tipo_conta", response.data.tipo_conta);
 
-const handleLogin = async () => {
-  try {
-    const response = await axios.post("http://127.0.0.1:8000/auth/login/", {
-      username: usernameLogin,
-      password: senhaLogin,
-    });
+      alert("Login realizado com sucesso!");
 
-    localStorage.setItem("token", response.data.access);
-    localStorage.setItem("tipo_conta", response.data.tipo_conta); // 👈 salvar tipo
-
-    alert("Login realizado com sucesso!");
-
-    // Redirecionamento baseado no tipo
-    switch (response.data.tipo_conta) {  
-      case "empresa":
-        navigate("/area-empresa");
-        break;
-      case "estudante":
-        navigate("/area-estudante");
-        break;
-      case "admin":
-        navigate("/area-administrador");
-        break;
-      default:
-        navigate("/area-helpers");
-        break;
+      // 🔹 Redirecionamento baseado no tipo de conta
+      switch (response.data.tipo_conta) {
+        case "empresa":
+          navigate("/area-empresa");
+          break;
+        case "estudante":
+          navigate("/area-estudante");
+          break;
+        case "admin":
+          navigate("/area-administrador");
+          break;
+        default:
+          navigate("/area-helpers");
+          break;
+      }
+    } catch (error) {
+      alert(
+        error.response?.data?.error ||
+          "Usuário ou senha incorretos ou erro na conexão"
+      );
     }
-  } catch (error) {
-    alert(
-      error.response?.data?.error ||
-      "Usuário ou senha incorretos ou erro na conexão"
-    );
-  }
-};
-
+  };
 
   // CADASTRO
   const handleRegister = async () => {
@@ -75,13 +74,13 @@ const handleLogin = async () => {
         return;
       }
 
-      const response = await axios.post(url, {
+      await axios.post(url, {
         username: usernameCadastro,
         nome,
         telefone,
         email: emailCadastro,
         password: senhaCadastro,
-        tipo_conta: tipoConta, 
+        tipo_conta: tipoConta,
       });
 
       alert("Cadastro realizado com sucesso!");

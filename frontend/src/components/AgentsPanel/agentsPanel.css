@@ -1,0 +1,162 @@
+
+
+.agents-panel-container {
+  position: fixed;
+  bottom: 40px;
+  right: 42px;
+}
+
+.open-button {
+  position: relative;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* Bloco arredondado com avatares dentro */
+.chat-launcher {
+  background-color: #1f1f1f;
+  border-radius: 30px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  z-index: 999;
+  transition: transform 0.2s ease;
+}
+
+.chat-launcher:hover {
+  transform: scale(1.05);
+}
+
+.avatar-wrapper {
+  position: relative;
+  width: 60px;
+  height: 40px;
+}
+
+.avatar-img {
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid white;
+  object-fit: cover;
+  top: 0;
+  transition: transform 0.2s;
+}
+
+.launcher-label {
+  margin-top: 6px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.agents-panel,
+.chat-panel {
+  position: absolute;
+  bottom: 60px;
+  right: 0;
+  width: 400px;
+  height: 500px;
+  background: white;
+  border: 1px solid #121010;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.agents-panel li {
+  display: flex;
+  padding: 10px;
+  cursor: pointer;
+  align-items: center;
+  border-bottom: 1px solid #dcdcdc;
+}
+
+.agents-panel h3 {
+  text-align: center;
+  font-weight: normal;
+  margin: 10px 0;
+}
+
+.agent-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.agent-info .name {
+  font-weight: bold;
+}
+
+.chat-panel {
+  display: flex;
+  flex-direction: column;
+  height: 500px;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ccc;
+}
+
+.chat-header img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  background: #fafafa;
+}
+
+.message {
+  margin: 5px 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  max-width: 70%;
+}
+
+.message.user {
+  background: #dcf8c6;
+  align-self: flex-end;
+}
+
+.message.agent {
+  background: #eee;
+  align-self: flex-start;
+}
+
+.chat-input {
+  display: flex;
+  border-top: 1px solid #ccc;
+  padding: 10px;
+}
+
+.chat-input input {
+  flex: 1;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 8px 12px;
+  margin-right: 10px;
+}
+
+.chat-input button {
+  border: none;
+  background: #0d9df1;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+}

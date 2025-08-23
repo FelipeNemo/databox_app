@@ -1,6 +1,6 @@
 
 .dashboard-area-adm-main {
-  background-color: #dddddd27;
+  background-color: #dddddd01;
   min-height: 100vh;
   padding: 20px 0px; /* <- mais espaço lateral */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -29,7 +29,7 @@
 .dashboard-gamification-card {
   background: #dfdfe281;
   padding: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.7);
+  box-shadow: 0 0px 2px rgba(0,0,0,0.7);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -63,4 +63,47 @@
   .dashboard-cards-container {
     grid-template-columns: 1fr;
   }
+}
+
+
+
+
+
+
+/* Ocupa toda a largura e altura disponível dentro do card */
+.full-width-calendar {
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+
+
+.dashboard-gamification-card h3 {
+  margin: 0 0 12px;
+  font-weight: 500; /* menos negrito (normal é 400, semi-bold é 600) */
+  font-size: 1.2rem; /* opcional: ligeiramente menor */
+  color: #050606;
+  text-align: center; /* centraliza */
+}
+
+
+.react-calendar-custom {
+  border: none;
+  background-color: transparent;
+  color: #03b9fc;
+}
+
+.react-calendar__tile {
+  height: 3rem;
+}
+
+.react-calendar__tile abbr {
+  color: #000000;
+}
+
+/* Ícone 🎯 */
+.react-calendar__tile span {
+  font-size: 1.5rem;
 }

@@ -1,8 +1,41 @@
-import React from "react";
+
+import React, { useState, useEffect } from "react";
 import Plot from "react-plotly.js";
+import Calendar from "react-calendar";
+import 'react-calendar/dist/Calendar.css';
 import "./dashboards.css";
 
+
 const Dashboard = () => {
+  const [missions, setMissions] = useState([]); // From Google Calendar
+  const [completedCount, setCompletedCount] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+
+  useEffect(() => {
+    // Simulando fetch do Google Calendar (você pode substituir por fetch real)
+    const exampleData = [
+      { date: "2025-08-03", title: "Estudar JavaScript", done: true },
+      { date: "2025-08-03", title: "Treinar Calistenia", done: false },
+      { date: "2025-08-03", title: "Finalizar Projeto XP", done: true },
+    ];
+
+    setMissions(exampleData);
+
+    const doneCount = exampleData.filter((m) => m.done).length;
+    setCompletedCount(doneCount);
+    setTotalCount(exampleData.length);
+  }, []);
+
+  const tileContent = ({ date, view }) => {
+    if (view === "month") {
+      const found = missions.find((m) => m.date === date.toISOString().split("T")[0]);
+      return found ? <span title={found.title}>🎯</span> : null;
+    }
+    return null;
+  };
+
+  const percentDone = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+
   return (
     <div className="dashboard-area-adm-main">
       <div className="dashboard-area-adm-content">
@@ -15,27 +48,32 @@ const Dashboard = () => {
                 data={[
                   {
                     type: "scatterpolar",
-                    r: [80, 60, 70, 50, 90],
-                    theta: ["Comunicação", "Lógica", "Criatividade", "Resiliência", "Disciplina"],
+                    r: [80, 60, 70, 60, 90, 80, 10, 20, 70, 30],
+                    theta: ["Database", "Reports", "Pipeline", "Dataviz", "Storytelling", "BI", "ML Ops", "ML Modeling", "Deployment", "Stats"],
                     fill: "toself",
                     name: "Skills",
                   },
                 ]}
                 layout={{
-                  polar: { radialaxis: { visible: true, range: [0, 100] } },
+                  polar: { radialaxis: { visible: true, range: [0, 100] },
+                 },
                   showlegend: false,
                   margin: { t: 30, b: 10 },
-                  paper_bgcolor: "#4c4c72ff",
-                  font: { color: "#fff" },
+                  height: "50px",
+                  paper_bgcolor: "transparent",
+                  font: { color: "black" },
                 }}
-                style={{ width:"100%", height: "350px" }}
+                style={{ width: "100%"}}
               />
             </div>
 
             {/* Calendário Gamificado */}
             <div className="dashboard-gamification-card">
-              <h3>Calendário Gamificado</h3>
-              <p>[Conteúdo interativo com datas e objetivos]</p>
+              <h3>Calendário</h3>
+              <Calendar  // O calendário deve ocupar todo o espaço disponível
+                tileContent={tileContent}
+                className="react-calendar-custom full-width-calendar"
+              />
             </div>
 
             {/* Evolução XP */}
@@ -55,23 +93,51 @@ const Dashboard = () => {
                 layout={{
                   title: "Progresso XP",
                   margin: { t: 30 },
-                  paper_bgcolor: "#3b3b54ff",
-                  plot_bgcolor: "#1e1e2f12",
-                  font: { color: "#fff" },
+                  height: "250px",
+                  paper_bgcolor: "transparent",
+                  plot_bgcolor: "white",
+
+                  font: { color: "black" },
+                  xaxis: {
+                    gridcolor: "gray",            // cor da grade do eixo X
+                    tickfont: { color: "black" },
+                  },
+                  yaxis: {
+                    gridcolor: "gray",            // cor da grade do eixo Y
+                    tickfont: { color: "black" },
+                  },
                 }}
-                style={{ width: "100%px", height: "350px" }}
+                style={{ width: "100%"}}
               />
             </div>
 
-            {/* Painel de Missões Ativas */}
+            {/* Missão Diária - Gráfico de Rosca */}
             <div className="dashboard-gamification-card">
               <h3>Missão Diária</h3>
-              <ul>
-                <li>🏆 Finalizar Projeto XP</li>
-                <li>📚 Estudar 3h de JavaScript</li>
-                <li>💪 Treinar Calistenia - Push Day</li>
-              </ul>
+              <Plot
+                data={[
+                  {
+                    values: [completedCount, totalCount - completedCount],
+                    labels: ["Feitas", "Pendentes"],
+                    type: "pie",
+                    hole: 0.6,
+                    marker: {
+                      colors: ["#28a1f8ff", "#cbdfe04d"]
+                    },
+                  },
+                ]}
+                layout={{
+                  showlegend: true,
+                  margin: { t: 30 },
+                  height: "350px",
+                  paper_bgcolor: "transparent",
+                  font: { color: "black" },
+                }}
+                style={{ width: "100%" }}
+              />
+
             </div>
+
           </div>
         </div>
       </div>
