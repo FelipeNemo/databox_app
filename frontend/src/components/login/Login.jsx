@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import api from "../../api/axios"; // substitui axios
+
 import "./login.css";
 
 const Login = () => {
@@ -26,7 +27,7 @@ const Login = () => {
   // LOGIN
   const handleLogin = async () => {
     try {
-      const response = await axios.post("http://127.0.0.1:8000/auth/login/", {
+      const response = await api.post("/auth/login/", {
         username: usernameLogin,
         password: senhaLogin,
       });
@@ -66,15 +67,15 @@ const Login = () => {
     try {
       let url = "";
       if (tipoConta === "estudante") {
-        url = "http://127.0.0.1:8000/auth/estudante/register/";
+        url = "/auth/estudante/register/";
       } else if (tipoConta === "empresa") {
-        url = "http://127.0.0.1:8000/auth/empresa/register/";
+        url = "/auth/empresa/register/";
       } else {
         alert("Selecione um tipo de conta válido");
         return;
       }
 
-      await axios.post(url, {
+      await api.post(url, {
         username: usernameCadastro,
         nome,
         telefone,
