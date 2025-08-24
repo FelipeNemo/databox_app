@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useRef } from 'react';
 import api from "../../api/axios"; // instância do axios com interceptors
 
@@ -14,11 +15,8 @@ const playClickSound = () => {
   clickSound.play().catch((err) => console.warn('Erro ao tocar som de clique:', err));
 };
 
-
-
 // 🔧 Normaliza qualquer payload (REST ou WS) para o formato usado pela UI
 const normalizeNotification = (n) => {
-  // Se tiver um campo titulo/title vindo do backend, usa. Se não, usa a primeira linha da mensagem
   const rawMessage = n?.message || n?.descricao || n?.body || "";
   const linhas = rawMessage.split("\n");
 
@@ -50,7 +48,6 @@ const normalizeNotification = (n) => {
     tipo,
   };
 };
-
 
 const TopbarAdm = () => {
   const [notifications, setNotifications] = useState([]);
@@ -107,7 +104,6 @@ const TopbarAdm = () => {
           const raw = JSON.parse(event.data);
           const data = normalizeNotification(raw);
 
-          // Não usa mais slice(0, 20), só insere
           setNotifications(prev => [data, ...prev]);
           setNotificacaoSelecionada(data);
           setModalNotificacaoOpen(true);
@@ -141,8 +137,14 @@ const TopbarAdm = () => {
     setDropdownOpen(false);
   };
 
-  // Fecha modal e marca notificação como lida
-  const fecharModalNotificacao = async () => {
+  // 🔹 Fecha modal sem marcar como lida
+  const fecharModalSimples = () => {
+    setModalNotificacaoOpen(false);
+    setNotificacaoSelecionada(null);
+  };
+
+  // 🔹 Marca como lida somente ao clicar no botão
+  const marcarComoLida = async () => {
     if (notificacaoSelecionada?.id) {
       try {
         await api.post("/notifications/mark_as_read/", { id: notificacaoSelecionada.id });
@@ -153,8 +155,7 @@ const TopbarAdm = () => {
         console.error("Erro ao marcar notificação como lida:", err);
       }
     }
-    setModalNotificacaoOpen(false);
-    setNotificacaoSelecionada(null);
+    fecharModalSimples();
   };
 
   return (
@@ -223,17 +224,20 @@ const TopbarAdm = () => {
       {/* Modal de Notificação */}
       <ModalBase
         isOpen={modalNotificacaoOpen}
-        onClose={fecharModalNotificacao}
+        onClose={fecharModalSimples} // ❌ agora não marca automaticamente
         title="NOTIFICAÇÃO"
         icon={<FiAlertCircle size={25} style={{ color: '#f1f1f1ff', marginRight: '5px' }} />}
-        buttons={notificacaoSelecionada?.tipo === 'confirm' ? ['Sim', 'Não'] : ['Ok']}
+        buttons={[]}
         showHeader={true}
       >
         {notificacaoSelecionada && (
-          <div>
+          <div className="modal-notificacao-content">
             <h3>{notificacaoSelecionada.titulo}</h3>
             <p>{notificacaoSelecionada.descricao}</p>
             <p><small>{notificacaoSelecionada.data}</small></p>
+            <div className="modal-actions">
+              <button onClick={marcarComoLida}>Ok</button>
+            </div>
           </div>
         )}
       </ModalBase>

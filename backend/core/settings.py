@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     "userauths.apps.UserauthsConfig",
     "api",
     "notifications.apps.NotificationsConfig",
+    "rewards.apps.RewardsConfig",
 
     # Django default
     "django.contrib.admin",

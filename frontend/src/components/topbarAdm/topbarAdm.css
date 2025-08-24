@@ -47,3 +47,36 @@
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 8px;
 }
+
+.modal-notificacao-content {
+    text-align: center;
+    padding: 10px;
+}
+
+.modal-notificacao-content h3 {
+    margin-bottom: 20px;
+}
+
+.modal-notificacao-content p {
+    margin-bottom: 5px;
+}
+
+.modal-notificacao-content small {
+    color: #978e8e5b;
+}
+
+
+.modal-notificacao-content .modal-actions button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.modal-notificacao-content .modal-actions button:hover {
+  background-color: #0056b3;
+}
