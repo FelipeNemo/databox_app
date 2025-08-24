@@ -6,12 +6,13 @@ User = get_user_model()
 
 class Notification(models.Model):
     NOTIFICATION_TYPES = [
-        ('info', 'Informação'),
-        ('task', 'Tarefa'),
+        ('reward', 'Recompensa'),
+        ('daily', 'Tarefa Diária'),
         ('alert', 'Alerta'),
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    title = models.CharField(max_length=255, blank=True, null=True)
     message = models.TextField()
     notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES, default='info')
     created_at = models.DateTimeField(auto_now_add=True)

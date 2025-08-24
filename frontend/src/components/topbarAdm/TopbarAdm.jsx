@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect, useRef } from 'react';
-import api from "../../api/axios"; // substitui axios
+import api from "../../api/axios"; // instância do axios com interceptors
 
 import ModalBase from '../modal/modalBase';
 import Inventario from '../inventario/Inventario';
@@ -13,6 +14,44 @@ const playClickSound = () => {
   clickSound.play().catch((err) => console.warn('Erro ao tocar som de clique:', err));
 };
 
+
+
+// 🔧 Normaliza qualquer payload (REST ou WS) para o formato usado pela UI
+const normalizeNotification = (n) => {
+  // Se tiver um campo titulo/title vindo do backend, usa. Se não, usa a primeira linha da mensagem
+  const rawMessage = n?.message || n?.descricao || n?.body || "";
+  const linhas = rawMessage.split("\n");
+
+  const titulo =
+    n?.titulo ||
+    n?.title ||
+    n?.message_title ||
+    (linhas.length > 0 && linhas[0].trim() !== "" ? linhas[0] : "Notificação");
+
+  const descricao =
+    n?.descricao ||
+    (linhas.length > 1 ? linhas.slice(1).join("\n") : rawMessage) ||
+    "—";
+
+  const isoDate =
+    n?.created_at || n?.data || n?.timestamp || new Date().toISOString();
+  const dt = new Date(isoDate);
+  const data = isNaN(dt.getTime())
+    ? new Date().toLocaleString("pt-BR")
+    : dt.toLocaleString("pt-BR");
+
+  const tipo = n?.tipo || n?.notification_type || "info";
+
+  return {
+    ...n,
+    titulo,
+    descricao,
+    data,
+    tipo,
+  };
+};
+
+
 const TopbarAdm = () => {
   const [notifications, setNotifications] = useState([]);
   const [inventarioOpen, setInventarioOpen] = useState(false);
@@ -24,22 +63,23 @@ const TopbarAdm = () => {
   const reconnectTimerRef = useRef(null);
   const reconnectAttemptsRef = useRef(0);
 
-  // 🔹 1) Buscar notificações iniciais via REST e abrir a mais recente
+  // 🔹 1) Buscar notificações iniciais via REST
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
         const response = await api.get("/notifications/user/");
-        setNotifications(response.data);
+        const lista = Array.isArray(response.data) ? response.data : [];
+        const normalizadas = lista.map(normalizeNotification);
+        setNotifications(normalizadas);
 
-        if (response.data.length > 0) {
-          setNotificacaoSelecionada(response.data[0]);
+        if (normalizadas.length > 0) {
+          setNotificacaoSelecionada(normalizadas[0]);
           setModalNotificacaoOpen(true);
         }
       } catch (error) {
         console.error("Erro ao buscar notificações:", error);
       }
     };
-
     fetchNotifications();
   }, []);
 
@@ -64,8 +104,11 @@ const TopbarAdm = () => {
 
       ws.onmessage = (event) => {
         try {
-          const data = JSON.parse(event.data);
-          setNotifications(prev => [data, ...prev].slice(0, 20));
+          const raw = JSON.parse(event.data);
+          const data = normalizeNotification(raw);
+
+          // Não usa mais slice(0, 20), só insere
+          setNotifications(prev => [data, ...prev]);
           setNotificacaoSelecionada(data);
           setModalNotificacaoOpen(true);
         } catch (err) {
@@ -91,28 +134,45 @@ const TopbarAdm = () => {
     };
   }, []);
 
+  // Abre modal ao clicar na notificação
   const abrirModalNotificacao = (notif) => {
     setNotificacaoSelecionada(notif);
     setModalNotificacaoOpen(true);
     setDropdownOpen(false);
   };
 
-  const fecharModalNotificacao = () => {
+  // Fecha modal e marca notificação como lida
+  const fecharModalNotificacao = async () => {
+    if (notificacaoSelecionada?.id) {
+      try {
+        await api.post("/notifications/mark_as_read/", { id: notificacaoSelecionada.id });
+        setNotifications(prev =>
+          prev.map(n => n.id === notificacaoSelecionada.id ? { ...n, is_read: true } : n)
+        );
+      } catch (err) {
+        console.error("Erro ao marcar notificação como lida:", err);
+      }
+    }
     setModalNotificacaoOpen(false);
     setNotificacaoSelecionada(null);
   };
 
   return (
     <div className="topbar-adm" style={{ position: 'fixed', top: 0, width: '100%', height: '60px', backgroundColor: '#00000078', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 20px', zIndex: 1000 }}>
+      
+      {/* Lado esquerdo: logo */}
       <div className="topbar-left" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
         <img src={Logo} alt="Logo da DataBox" className="logo-img" />
       </div>
 
+      {/* Lado direito */}
       <div className="topbar-right" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+        {/* Inventário */}
         <button onClick={() => setInventarioOpen(true)} className="topbar-btn" title="Inventário">
           <FiBox size={20} />
         </button>
 
+        {/* Notificações */}
         <div style={{ position: 'relative' }}>
           <button
             onClick={() => { playClickSound(); setDropdownOpen(prev => !prev); }}
@@ -120,7 +180,7 @@ const TopbarAdm = () => {
             title="Notificações"
           >
             <FiAlertCircle size={20} style={{ marginRight: '5px' }} />
-            ({notifications.length})
+            ({notifications.filter(n => !n.is_read).length})
           </button>
 
           {dropdownOpen && (
@@ -129,7 +189,11 @@ const TopbarAdm = () => {
                 <div style={{ padding: '10px' }}>Nenhuma notificação</div>
               ) : (
                 notifications.map((notif, index) => (
-                  <div key={index} style={{ padding: '10px', borderBottom: '1px solid #444', cursor: 'pointer', backgroundColor: index === 0 ? '#333' : 'transparent' }} onClick={() => abrirModalNotificacao(notif)}>
+                  <div
+                    key={notif.id || index}
+                    style={{ padding: '10px', borderBottom: '1px solid #444', cursor: 'pointer', backgroundColor: !notif.is_read ? '#333' : 'transparent' }}
+                    onClick={() => abrirModalNotificacao(notif)}
+                  >
                     <strong>{notif.titulo}</strong>
                     <br />
                     <small>{notif.data}</small>
@@ -140,14 +204,31 @@ const TopbarAdm = () => {
           )}
         </div>
 
+        {/* Menu */}
         <Menu />
       </div>
 
-      <ModalBase isOpen={inventarioOpen} onClose={() => setInventarioOpen(false)} title="INVENTÁRIO" icon={<FiBox size={25} style={{ marginRight: '8px', verticalAlign: 'middle' }} />} buttons={[]} showHeader={true}>
+      {/* Modal de Inventário */}
+      <ModalBase
+        isOpen={inventarioOpen}
+        onClose={() => setInventarioOpen(false)}
+        title="INVENTÁRIO"
+        icon={<FiBox size={25} style={{ marginRight: '8px', verticalAlign: 'middle' }} />}
+        buttons={[]}
+        showHeader={true}
+      >
         <Inventario />
       </ModalBase>
 
-      <ModalBase isOpen={modalNotificacaoOpen} onClose={fecharModalNotificacao} title="NOTIFICAÇÃO" icon={<FiAlertCircle size={25} style={{ color: '#f1f1f1ff', marginRight: '5px' }} />} buttons={notificacaoSelecionada?.tipo === 'confirm' ? ['Sim', 'Não'] : ['Ok']} showHeader={true}>
+      {/* Modal de Notificação */}
+      <ModalBase
+        isOpen={modalNotificacaoOpen}
+        onClose={fecharModalNotificacao}
+        title="NOTIFICAÇÃO"
+        icon={<FiAlertCircle size={25} style={{ color: '#f1f1f1ff', marginRight: '5px' }} />}
+        buttons={notificacaoSelecionada?.tipo === 'confirm' ? ['Sim', 'Não'] : ['Ok']}
+        showHeader={true}
+      >
         {notificacaoSelecionada && (
           <div>
             <h3>{notificacaoSelecionada.titulo}</h3>
