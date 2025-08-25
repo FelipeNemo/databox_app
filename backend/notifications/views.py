@@ -19,13 +19,17 @@ def user_notifications(request):
     return Response(serializer.data)
 
 
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def mark_as_read(request):
+    """
+    Marca uma notificação como lida.
+    """
     notif_id = request.data.get("id")
     if not notif_id:
         return Response({"error": "ID da notificação é obrigatório"}, status=400)
-    
+
     try:
         notif = Notification.objects.get(id=notif_id, user=request.user)
         notif.is_read = True
@@ -33,7 +37,6 @@ def mark_as_read(request):
         return Response({"message": "Notificação marcada como lida"})
     except Notification.DoesNotExist:
         return Response({"error": "Notificação não encontrada"}, status=404)
-
 
 # notifications/views.py
 from rest_framework.decorators import api_view, permission_classes

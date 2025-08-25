@@ -4,34 +4,28 @@ from django.dispatch import receiver
 from notifications.models import Notification
 from .models import Reward
 
+
 @receiver(post_save, sender=Notification)
 def reward_for_notification(sender, instance, created, **kwargs):
-    if created:
-        # Exemplo: dá 10 pontos por cada notificação recebida
-        user = instance.user  
-        Reward.objects.create(user=user, points=10, reason="Notificação recebida")
+    """
+    Cria recompensa automática quando uma nova notificação é criada.
+    """
+    if not created:
+        return
 
+    user = getattr(instance, "user", None)
+    if not user:
+        return
 
+    # Verifica se já existe recompensa associada a essa notificação
+    if Reward.objects.filter(user=user, notification=instance).exists():
+        return
 
-# Exemplos de sinais caso você queira reagir a eventos,
-# por enquanto deixamos sem lógica automática para evitar efeitos colaterais.
-
-# from django.db.models.signals import post_save
-# from django.dispatch import receiver
-# from notifications.models import Notification
-# from .models import Reward
-#
-# @receiver(post_save, sender=Notification)
-# def maybe_reward_on_notification(sender, instance, created, **kwargs):
-#     if not created:
-#         return
-#     # Exemplo: dar XP por uma notificação diária específica
-#     if instance.notification_type == "daily" and instance.title == "Databox":
-#         Reward.objects.create(
-#             user=instance.user,
-#             reward_type="xp",
-#             amount=5,
-#             notification=instance,
-#             extra_data={"source": "signal_auto"},
-#         )
-#         # Você pode optar por executar o grant aqui também.
+    # Cria recompensa corretamente
+    Reward.objects.create(
+        user=user,
+        reward_type=Reward.TYPE_XP,   # pode ser "xp", "coin", etc.
+        amount=10,                    # substitui o antigo "points"
+        notification=instance,
+        extra_data={"source": "notif_auto"},
+    )
