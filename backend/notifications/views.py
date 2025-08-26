@@ -5,7 +5,9 @@ from rest_framework.response import Response
 from .models import Notification
 from .serializers import NotificationSerializer
 from .utils import enviar_notificacao
-
+from rewards.models import Reward
+from rewards.services import RewardService
+from django.shortcuts import get_object_or_404
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def user_notifications(request):
@@ -38,10 +40,8 @@ def mark_as_read(request):
     except Notification.DoesNotExist:
         return Response({"error": "Notificação não encontrada"}, status=404)
 
-# notifications/views.py
-from rewards.models import Reward
-from rewards.services import RewardService
-from django.shortcuts import get_object_or_404
+
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])

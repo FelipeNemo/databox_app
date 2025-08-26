@@ -17,6 +17,9 @@ class Notification(models.Model):
     notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES, default='info')
     created_at = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
+    
+    # 🔹 Novo campo para armazenar a recompensa ligada a essa notificação
+    reward_text = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return f"Notificação para {self.user.username} - {self.notification_type}"

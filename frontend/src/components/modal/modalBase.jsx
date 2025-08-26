@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { FiAlertCircle } from 'react-icons/fi';
 import './modal.css';
+import { useTopbarAdm } from '../hook/useTopbarAdm';
 
 const ModalBase = ({
   isOpen,
@@ -12,17 +13,14 @@ const ModalBase = ({
   sound = '/sounds/mixkit-interface-device-click-2577.wav',
   buttons = ['OK'] // opções: ['OK'], ['Sim', 'Não'], ou [] para nenhum botão
 }) => {
+  const { playClickSound } = useTopbarAdm();
+
   useEffect(() => {
     if (isOpen && sound) {
       const notifySound = new Audio(sound);
       notifySound.play().catch((err) => console.warn('Erro ao tocar som:', err));
     }
   }, [isOpen, sound]);
-
-  const playClickSound = () => {
-    const clickSound = new Audio('/sounds/mixkit-interface-device-click-2577.wav');
-    clickSound.play().catch((err) => console.warn('Erro ao tocar som de clique:', err));
-  };
 
   if (!isOpen) return null;
 
