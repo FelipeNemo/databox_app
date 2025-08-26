@@ -9,15 +9,14 @@ def notificar_bom_dia(sender, request, user, **kwargs):
     # Cria no banco
     notif = Notification.objects.create(
         user=user,
-        message="Bom dia,lembre seus motivos! ",
+        message="Ler SNOMED ",
         notification_type="info"
     )
 
     # Envia instantaneamente via WebSocket
     enviar_notificacao(
         user_id=user.id,
-        titulo="Bom dia!",
+        titulo="Ebers IA",
         descricao=notif.message,
         tipo=notif.notification_type
     )
-

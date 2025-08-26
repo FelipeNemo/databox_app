@@ -1,15 +1,39 @@
-
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaPause, FaTrash, FaPlus } from 'react-icons/fa';
 import './gamificationStats.css';
 
-const GamificationStats = ({ xpPercent, healthPercent, coins }) => {
-  const missions = [
-    { title: "Postar vídeo agora", progress: 45 },
-    { title: "Finalizar protótipo UI", progress: 70 },
-    { title: "Revisar código", progress: 20 },
-  ];
+const GamificationStats = () => {
+  // Estados internos (iniciam zerados)
+  const [xpPercent, setXpPercent] = useState(0);
+  const [healthPercent, setHealthPercent] = useState(0);
+  const [coins, setCoins] = useState(0);
+  const [missions, setMissions] = useState([]);
+
+  // 🔹 Função para aplicar recompensas vindas do backend
+  const applyReward = (reward) => {
+    switch (reward.reward_type) {
+      case 'xp':
+        setXpPercent((prev) => Math.min(prev + reward.amount, 100));
+        break;
+      case 'coin':
+        setCoins((prev) => prev + reward.amount);
+        break;
+      case 'health':
+        setHealthPercent((prev) => Math.min(prev + reward.amount, 100));
+        break;
+      default:
+        console.log("Recompensa desconhecida:", reward);
+    }
+  };
+
+  // 🔹 Exemplo: simulando recebimento de recompensa (teste)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      applyReward({ reward_type: 'xp', amount: 20 });
+      applyReward({ reward_type: 'coin', amount: 5 });
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="gamification-wrapper">
@@ -42,28 +66,32 @@ const GamificationStats = ({ xpPercent, healthPercent, coins }) => {
         <div className="mission-panel">
           <h2>Missões</h2>
 
-          {missions.map((mission, index) => (
-            <div className="mission-item" key={index}>
-              <div className="mission-inline">
-                <div
-                  className="mission-progress-circle"
-                  style={{
-                    background: `conic-gradient(#4caf50 ${mission.progress}%, #ddd ${mission.progress}%)`
-                  }}
-                >
-                  <span className="progress-text">{mission.progress}%</span>
+          {missions.length > 0 ? (
+            missions.map((mission, index) => (
+              <div className="mission-item" key={index}>
+                <div className="mission-inline">
+                  <div
+                    className="mission-progress-circle"
+                    style={{
+                      background: `conic-gradient(#4caf50 ${mission.progress}%, #ddd ${mission.progress}%)`
+                    }}
+                  >
+                    <span className="progress-text">{mission.progress}%</span>
+                  </div>
+
+                  <span className="mission-title">{mission.title}</span>
                 </div>
 
-                <span className="mission-title">{mission.title}</span>
+                <div className="mission-actions">
+                  <button><FaPause /></button>
+                  <button><FaTrash /></button>
+                  <button><FaPlus /></button>
+                </div>
               </div>
-
-              <div className="mission-actions">
-                <button><FaPause /></button>
-                <button><FaTrash /></button>
-                <button><FaPlus /></button>
-              </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p>Nenhuma missão disponível.</p>
+          )}
         </div>
 
       </div>

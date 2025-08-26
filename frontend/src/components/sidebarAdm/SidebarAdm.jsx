@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './sidebarAdm.css';
-
+import { useTopbarAdm } from '../hook/useTopbarAdm';
 import {
   FaHome, FaChartBar, FaUsers, FaUniversity, FaUserTie,
   FaCreditCard, FaShieldAlt, FaComments, FaEnvelope,
@@ -10,14 +10,11 @@ import {
   FaChevronDown, FaChevronRight
 } from 'react-icons/fa';
 
+
 const SidebarAdm = () => {
+  const { playClickSound } = useTopbarAdm();
   const navigate = useNavigate();
   const [openSections, setOpenSections] = useState({});
-
-  const playClickSound = () => {
-    const clickSound = new Audio('/sounds/mixkit-interface-device-click-2577.wav');
-    clickSound.play().catch((err) => console.warn('Erro ao tocar som de clique:', err));
-  };
 
   const toggleSection = (section) => {
     playClickSound();

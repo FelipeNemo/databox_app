@@ -1,0 +1,92 @@
+/* Fundo do modal */
+.reward-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+  backdrop-filter: blur(4px);
+}
+
+/* Caixa do modal */
+.reward-modal-box {
+  background: linear-gradient(135deg, #1e1e2f, #2c2c54);
+  border-radius: 24px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+  color: #ffffff;
+  box-shadow: 0 0 40px rgba(255, 255, 255, 0.1),
+              0 20px 60px rgba(0, 0, 0, 0.5);
+  border: 2px solid #00f0ff;
+  animation: popIn 0.4s ease-out forwards;
+  font-family: 'Orbitron', sans-serif;
+}
+
+/* Animação de pop */
+@keyframes popIn {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Título do modal */
+.reward-modal-box h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #00f0ff;
+  text-shadow: 0 0 8px #00f0ff, 0 0 16px #00f0ff;
+  margin-bottom: 0.8rem;
+}
+
+/* Mensagem do modal */
+.reward-modal-box p {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+  color: #ffffffcc;
+}
+
+/* Recompensas listadas */
+.reward-modal-box .reward-list p {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffde00;
+  margin: 0.3rem 0;
+  text-shadow: 0 0 6px #ffde00;
+  transition: transform 0.2s ease;
+}
+
+.reward-modal-box .reward-list p:hover {
+  transform: scale(1.05);
+}
+
+/* Botão */
+.reward-modal-box .reward-button {
+  margin-top: 1.5rem;
+  padding: 0.8rem 0;
+  font-weight: bold;
+  font-size: 1rem;
+  background: linear-gradient(90deg, #00f0ff, #ff00ff);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  color: #000;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.5),
+              0 0 40px rgba(255, 0, 255, 0.4);
+  transition: all 0.2s ease;
+}
+
+.reward-modal-box .reward-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.8),
+              0 0 60px rgba(255, 0, 255, 0.6);
+}
