@@ -6,6 +6,7 @@ from notifications.models import Notification
 
 class Reward(models.Model):
     TYPE_XP = "xp"
+    TYPE_VITALITY = "vitalidade"
     TYPE_COIN = "coin"
     TYPE_ITEM = "item"
     TYPE_LOOTBOX = "lootbox"
@@ -13,6 +14,7 @@ class Reward(models.Model):
 
     REWARD_TYPES = [
         (TYPE_XP, "Experiência (XP)"),
+        (TYPE_VITALITY, "Vitalidade"),
         (TYPE_COIN, "Moeda"),
         (TYPE_ITEM, "Item"),
         (TYPE_LOOTBOX, "Caixa Misteriosa"),

@@ -7,8 +7,8 @@ User = get_user_model()
 class Notification(models.Model):
     NOTIFICATION_TYPES = [
         ('reward', 'Recompensa'),
-        ('daily', 'Tarefa Diária'),
-        ('alert', 'Alerta'),
+        ('reward', 'Tarefa Diária'),
+        ('reward', 'Alerta'),
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')

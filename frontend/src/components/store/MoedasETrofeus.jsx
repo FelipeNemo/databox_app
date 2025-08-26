@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import api from "../../api/axios"; // instância do axios com interceptors
 
@@ -7,17 +8,22 @@ import Menu from '../Menu/Menu';
 import './topbarAdm.css';
 import { FiBox, FiAlertCircle } from 'react-icons/fi';
 import Logo from "../../assets/images/logo.png";
+import RewardModal from '../rewards/RewardModal'; // caminho correto do seu RewardModal
 
+// 🔹 Função para som de clique
 const playClickSound = () => {
   const clickSound = new Audio('/sounds/mixkit-interface-device-click-2577.wav');
   clickSound.play().catch((err) => console.warn('Erro ao tocar som de clique:', err));
 };
 
-
+// 🔹 Função para som de recompensa
+const playRewardSound = () => {
+  const rewardSound = new Audio('/sounds/mixkit-quick-positive-video-game-notification-interface-265.wav');
+  rewardSound.play().catch((err) => console.warn('Erro ao tocar som de recompensa:', err));
+};
 
 // 🔧 Normaliza qualquer payload (REST ou WS) para o formato usado pela UI
 const normalizeNotification = (n) => {
-  // Se tiver um campo titulo/title vindo do backend, usa. Se não, usa a primeira linha da mensagem
   const rawMessage = n?.message || n?.descricao || n?.body || "";
   const linhas = rawMessage.split("\n");
 
@@ -50,7 +56,6 @@ const normalizeNotification = (n) => {
   };
 };
 
-
 const TopbarAdm = () => {
   const [notifications, setNotifications] = useState([]);
   const [inventarioOpen, setInventarioOpen] = useState(false);
@@ -58,11 +63,15 @@ const TopbarAdm = () => {
   const [modalNotificacaoOpen, setModalNotificacaoOpen] = useState(false);
   const [notificacaoSelecionada, setNotificacaoSelecionada] = useState(null);
 
+  // 🔹 Estado para modal de recompensa
+  const [modalRecompensaOpen, setModalRecompensaOpen] = useState(false);
+  const [recompensaSelecionada, setRecompensaSelecionada] = useState(null);
+
   const wsRef = useRef(null);
   const reconnectTimerRef = useRef(null);
   const reconnectAttemptsRef = useRef(0);
 
-  // 🔹 1) Buscar notificações iniciais via REST
+  // 🔹 Buscar notificações iniciais via REST
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
@@ -82,7 +91,7 @@ const TopbarAdm = () => {
     fetchNotifications();
   }, []);
 
-  // 🔹 2) WebSocket para notificações em tempo real
+  // 🔹 WebSocket para notificações em tempo real
   useEffect(() => {
     const token = localStorage.getItem("access");
     if (!token) return;
@@ -106,7 +115,6 @@ const TopbarAdm = () => {
           const raw = JSON.parse(event.data);
           const data = normalizeNotification(raw);
 
-          // Não usa mais slice(0, 20), só insere
           setNotifications(prev => [data, ...prev]);
           setNotificacaoSelecionada(data);
           setModalNotificacaoOpen(true);
@@ -133,15 +141,21 @@ const TopbarAdm = () => {
     };
   }, []);
 
-  // Abre modal ao clicar na notificação
+  // 🔹 Abre modal de notificação
   const abrirModalNotificacao = (notif) => {
     setNotificacaoSelecionada(notif);
     setModalNotificacaoOpen(true);
     setDropdownOpen(false);
   };
 
-  // Fecha modal e marca notificação como lida
-  const fecharModalNotificacao = async () => {
+  // 🔹 Fecha modal simples
+  const fecharModalSimples = () => {
+    setModalNotificacaoOpen(false);
+    setNotificacaoSelecionada(null);
+  };
+
+  // 🔹 Marca como lida e abre recompensa se necessário
+  const marcarComoLida = async () => {
     if (notificacaoSelecionada?.id) {
       try {
         await api.post("/notifications/mark_as_read/", { id: notificacaoSelecionada.id });
@@ -152,9 +166,21 @@ const TopbarAdm = () => {
         console.error("Erro ao marcar notificação como lida:", err);
       }
     }
-    setModalNotificacaoOpen(false);
-    setNotificacaoSelecionada(null);
+
+    fecharModalSimples();
+
+    if (notificacaoSelecionada?.tipo === "reward") {
+      setRecompensaSelecionada(notificacaoSelecionada);
+      setModalRecompensaOpen(true);
+    }
   };
+
+  // 🔹 Toca som ao abrir modal de recompensa
+  useEffect(() => {
+    if (modalRecompensaOpen) {
+      playRewardSound();
+    }
+  }, [modalRecompensaOpen]);
 
   return (
     <div className="topbar-adm" style={{ position: 'fixed', top: 0, width: '100%', height: '60px', backgroundColor: '#00000078', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 20px', zIndex: 1000 }}>
@@ -166,12 +192,10 @@ const TopbarAdm = () => {
 
       {/* Lado direito */}
       <div className="topbar-right" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-        {/* Inventário */}
         <button onClick={() => setInventarioOpen(true)} className="topbar-btn" title="Inventário">
           <FiBox size={20} />
         </button>
 
-        {/* Notificações */}
         <div style={{ position: 'relative' }}>
           <button
             onClick={() => { playClickSound(); setDropdownOpen(prev => !prev); }}
@@ -203,7 +227,6 @@ const TopbarAdm = () => {
           )}
         </div>
 
-        {/* Menu */}
         <Menu />
       </div>
 
@@ -217,26 +240,49 @@ const TopbarAdm = () => {
         showHeader={true}
       >
         <Inventario />
-        </ModalBase>
-
+      </ModalBase>
 
       {/* Modal de Notificação */}
-    <ModalBase
-      isOpen={modalNotificacaoOpen}
-      onClose={fecharModalNotificacao}
-      title="NOTIFICAÇÃO"
-      icon={<FiAlertCircle size={25} style={{ color: '#f1f1f1ff', marginRight: '5px' }} />}
-      buttons={notificacaoSelecionada?.tipo === 'confirm' ? ['Sim', 'Não'] : ['Ok']}
-      showHeader={true}
-    >
-      {notificacaoSelecionada && (
-        <div className="modal-notificacao-content">
-          <h3>{notificacaoSelecionada.titulo}</h3>
-          <p>{notificacaoSelecionada.descricao}</p>
-          <p><small>{notificacaoSelecionada.data}</small></p>
-        </div>
-      )}
-    </ModalBase>
+      <ModalBase
+        isOpen={modalNotificacaoOpen}
+        onClose={fecharModalSimples}
+        title="NOTIFICAÇÃO"
+        icon={<FiAlertCircle size={25} style={{ color: '#f1f1f1ff', marginRight: '5px' }} />}
+        buttons={[]}
+        showHeader={true}
+      >
+        {notificacaoSelecionada && (
+          <div className="modal-notificacao-content">
+            <h3>{notificacaoSelecionada.titulo}</h3>
+            <p>{notificacaoSelecionada.descricao}</p>
+            <p><small>{notificacaoSelecionada.data}</small></p>
+            <div className="modal-actions">
+              <button onClick={marcarComoLida}>Ok</button>
+            </div>
+          </div>
+        )}
+      </ModalBase>
+
+      {/* Modal de Recompensa */}
+      <ModalBase
+        isOpen={modalRecompensaOpen}
+        onClose={() => { setModalRecompensaOpen(false); setRecompensaSelecionada(null); }}
+        title="RECOMPENSA" 
+        icon={<FiBox size={25} style={{ color: '#f1f1f1ff', marginRight: '5px' }} />}
+        buttons={[]}
+        showHeader={true}
+      >
+        {recompensaSelecionada && (
+          <div className="modal-recompensa-content">
+            <h3>{recompensaSelecionada.titulo}</h3>
+            <p>{recompensaSelecionada.descricao}</p>
+            <p><small>{recompensaSelecionada.data}</small></p>
+            <div className="modal-actions">
+              <button onClick={() => setModalRecompensaOpen(false)}>Fechar</button>
+            </div>
+          </div>
+        )}
+      </ModalBase>
     </div>
   );
 };

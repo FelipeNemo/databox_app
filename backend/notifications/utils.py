@@ -35,9 +35,9 @@ def criar_notificacoes_diarias(user):
     Cria o pacote de notificações diárias (uma vez por dia).
     """
     notificacoes = [
-        {"titulo": "Treino físico", "mensagem": "Não esqueça do seu treino de hoje!", "tipo": "daily"},
-        {"titulo": "Matéria do Dia", "mensagem": "Hoje revise: Lógica Proposicional.", "tipo": "daily"},
-        {"titulo": "Databox", "mensagem": "Programe algo no databox.", "tipo": "daily"},
+        {"titulo": "Treino físico", "mensagem": "Não esqueça do seu treino de hoje!", "tipo": "reward"},
+        {"titulo": "Matéria do Dia", "mensagem": "Hoje revise: Lógica Proposicional.", "tipo": "reward"},
+        {"titulo": "Databox", "mensagem": "Programe algo no databox.", "tipo": "reward"},
     ]
     for notif in notificacoes:
         criar_notificacao(user, notif["titulo"], notif["mensagem"], notif["tipo"])
