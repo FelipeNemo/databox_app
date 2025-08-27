@@ -8,6 +8,9 @@ from .utils import enviar_notificacao
 from rewards.models import Reward
 from rewards.services import RewardService
 from django.shortcuts import get_object_or_404
+
+from notifications.utils import criar_notificacoes_diarias
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def user_notifications(request):

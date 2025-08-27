@@ -10,19 +10,29 @@ import Logo from "../../assets/images/logo.png";
 import { useTopbarAdm } from '../hook/useTopbarAdm';
 
 const TopbarAdm = () => {
-  const {playRewardSound, normalizeNotification } = useTopbarAdm();
+  const {playClickSound, playRewardSound, normalizeNotification } = useTopbarAdm();
   const [notifications, setNotifications] = useState([]);
   const [inventarioOpen, setInventarioOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
   const [modalNotificacaoOpen, setModalNotificacaoOpen] = useState(false);
   const [notificacaoSelecionada, setNotificacaoSelecionada] = useState(null);
 
   const [modalRecompensaOpen, setModalRecompensaOpen] = useState(false);
   const [recompensaSelecionada, setRecompensaSelecionada] = useState(null);
 
+  const [modalNotificacaoAutoOpen, setModalNotificacaoAutoOpen] = useState(true);
+
+
   const wsRef = useRef(null);
   const reconnectTimerRef = useRef(null);
   const reconnectAttemptsRef = useRef(0);
+
+  // 🔹 Ref para modalNotificacaoOpen (evita abrir várias ao mesmo tempo)
+  const modalNotificacaoOpenRef = useRef(modalNotificacaoOpen);
+  useEffect(() => {
+    modalNotificacaoOpenRef.current = modalNotificacaoOpen;
+  }, [modalNotificacaoOpen]);
 
   // 🔹 Buscar notificações iniciais via REST
   useEffect(() => {
@@ -33,16 +43,25 @@ const TopbarAdm = () => {
         const normalizadas = lista.map(normalizeNotification);
         setNotifications(normalizadas);
 
-        if (normalizadas.length > 0) {
+        // 🔹 AQUI É O TRECHO QUE VAI MUDAR
+        if (normalizadas.length > 0 && modalNotificacaoAutoOpen) {
           setNotificacaoSelecionada(normalizadas[0]);
           setModalNotificacaoOpen(true);
+          playClickSound()
+          setModalNotificacaoAutoOpen(false); // impede reabertura automática
         }
       } catch (error) {
         console.error("Erro ao buscar notificações:", error);
       }
     };
     fetchNotifications();
-  }, [normalizeNotification]);
+  }, [normalizeNotification, modalNotificacaoAutoOpen, playClickSound]); // ⚠️ adicionar modalNotificacaoAutoOpen aqui
+
+  const fecharModalNotificacao = () => {
+    setModalNotificacaoOpen(false);
+    setNotificacaoSelecionada(null);
+    setModalNotificacaoAutoOpen(false); // evita que reabra sozinho
+  };
 
   // 🔹 WebSocket para notificações em tempo real
   useEffect(() => {
@@ -69,8 +88,11 @@ const TopbarAdm = () => {
           const data = normalizeNotification(raw);
 
           setNotifications(prev => [data, ...prev]);
-          setNotificacaoSelecionada(data);
-          setModalNotificacaoOpen(true);
+          if (!modalNotificacaoOpenRef.current) {
+            setNotificacaoSelecionada(data);
+            setModalNotificacaoOpen(true);
+            playClickSound()
+          }
         } catch (err) {
           console.warn("Mensagem WS inválida:", err);
         }
@@ -92,41 +114,51 @@ const TopbarAdm = () => {
       if (reconnectTimerRef.current) clearTimeout(reconnectTimerRef.current);
       if (wsRef.current) wsRef.current.close();
     };
-  }, [normalizeNotification]);
+  }, [normalizeNotification, playClickSound]);
 
   // 🔹 Abre modal de notificação
   const abrirModalNotificacao = (notif) => {
     setNotificacaoSelecionada(notif);
     setModalNotificacaoOpen(true);
     setDropdownOpen(false);
+    playClickSound();
   };
 
-  const fecharModalSimples = () => {
-    setModalNotificacaoOpen(false);
-    setNotificacaoSelecionada(null);
-  };
-
-const marcarComoLida = async () => {
-  if (notificacaoSelecionada?.id) {
-    try {
-      await api.post("/notifications/mark_as_read/", { id: notificacaoSelecionada.id });
-      setNotifications(prev =>
-        prev.map(n => n.id === notificacaoSelecionada.id ? { ...n, is_read: true } : n)
-      );
-    } catch (err) {
-      console.error("Erro ao marcar notificação como lida:", err);
+  // 🔹 Marca como lida e abre recompensa se existir
+  const marcarComoLida = async () => {
+    if (notificacaoSelecionada?.id) {
+      try {
+        await api.post("/notifications/mark_as_read/", { id: notificacaoSelecionada.id });
+        setNotifications(prev =>
+          prev.map(n => n.id === notificacaoSelecionada.id ? { ...n, is_read: true } : n)
+        );
+      } catch (err) {
+        console.error("Erro ao marcar notificação como lida:", err);
+      }
     }
-  }
 
-  fecharModalSimples();
+    // Fecha a notificação
+    setModalNotificacaoOpen(false);
 
-  if (notificacaoSelecionada?.tipo === "reward") {
-    setRecompensaSelecionada(notificacaoSelecionada);
-    setModalRecompensaOpen(true);
-    playRewardSound(); // 🔊 toca aqui uma única vez
-  }
-};
+    // Se tiver recompensa, abre em seguida
+    if (
+      notificacaoSelecionada?.tipo === "reward" ||
+      notificacaoSelecionada?.reward_text ||
+      notificacaoSelecionada?.rewards > 0
+    ) {
+      setRecompensaSelecionada(notificacaoSelecionada);
+      setModalRecompensaOpen(true);
+      playRewardSound();
+    } else {
+      setNotificacaoSelecionada(null);
+    }
+  };
 
+  // 🔹 Fecha recompensa
+  const fecharRecompensa = () => {
+    setModalRecompensaOpen(false);
+    setRecompensaSelecionada(null);
+  };
 
   return (
     <div className="topbar-adm" style={{ position: 'fixed', top: 0, width: '100%', height: '60px', backgroundColor: '#00000078', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 20px', zIndex: 1000 }}>
@@ -191,7 +223,7 @@ const marcarComoLida = async () => {
       {/* Modal de Notificação */}
       <ModalBase
         isOpen={modalNotificacaoOpen}
-        onClose={fecharModalSimples}
+        onClose={fecharModalNotificacao} 
         title="NOTIFICAÇÃO"
         icon={<FiAlertCircle size={25} style={{ color: '#f1f1f1ff', marginRight: '5px' }} />}
         buttons={[]}
@@ -211,7 +243,7 @@ const marcarComoLida = async () => {
       {/* Modal de Recompensa */}
       <ModalBase
         isOpen={modalRecompensaOpen}
-        onClose={() => { setModalRecompensaOpen(false); setRecompensaSelecionada(null); }}
+        onClose={fecharRecompensa}
         title="RECOMPENSA" 
         icon={<FiAlertCircle size={25} style={{ color: '#f1f1f1ff', marginRight: '5px' }} />}
         buttons={[]}
@@ -222,7 +254,11 @@ const marcarComoLida = async () => {
             <h3>{recompensaSelecionada.titulo}</h3>
             <p>{recompensaSelecionada.reward_text}</p>
             <div className="modal-actions">
-              <button onClick={() => setModalRecompensaOpen(false)}>Ok</button>
+              <button className="recompensa-btn" onClick={() => { playRewardSound();
+                 setModalRecompensaOpen(false);
+                 setRecompensaSelecionada(null); }}>
+                Ok
+              </button>
             </div>
           </div>
         )}
