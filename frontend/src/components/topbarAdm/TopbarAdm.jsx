@@ -211,6 +211,7 @@ const TopbarAdm = () => {
       {/* Modal de Inventário */}
       <ModalBase
         isOpen={inventarioOpen}
+        
         onClose={() => setInventarioOpen(false)}
         title="INVENTÁRIO"
         icon={<FiBox size={25} style={{ marginRight: '8px', verticalAlign: 'middle' }} />}
