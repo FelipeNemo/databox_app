@@ -1,15 +1,62 @@
 #rewards/views.py
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 from rest_framework import status
-
-from django.shortcuts import get_object_or_404
-from notifications.models import Notification
-
 from .models import Reward
 from .serializers import RewardSerializer
 from .services import RewardService
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from notifications.utils import enviar_notificacao
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+from notifications.models import Notification
+from rewards.models import Reward
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from notifications.models import Notification
+from rewards.models import Reward
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rewards.models import Reward
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def my_status(request):
+    user = request.user
+
+    # Garante que estamos filtrando com os valores reais do banco (minúsculos)
+    rewards = Reward.objects.filter(user=user, status="granted")
+
+    total_xp = sum(r.amount for r in rewards.filter(reward_type="xp"))
+    coins = sum(r.amount for r in rewards.filter(reward_type="coin"))
+    vitality = sum(r.amount for r in rewards.filter(reward_type="vitalidade"))
+
+    # Calcula nível
+    level = 1
+    xp_accumulated = total_xp
+    xp_needed = int(100 * (level ** 1.5))
+    while xp_accumulated >= xp_needed:
+        xp_accumulated -= xp_needed
+        level += 1
+        xp_needed = int(100 * (level ** 1.5))
+
+    xp_current = xp_accumulated
+    xp_progress = round((xp_current / xp_needed) * 100, 2)
+
+    return Response({
+        "level": level,
+        "xp_current": xp_current,
+        "xp_needed": xp_needed,
+        "xp_progress": xp_progress,
+        "coins": coins,
+        "vitalidade": min(vitality, 560),  # limite de Vitalidade
+        # debug opcional
+        "debug_rewards": list(rewards.values("id", "reward_type", "amount", "status")),
+    })
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])

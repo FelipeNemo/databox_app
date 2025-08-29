@@ -45,35 +45,61 @@ def mark_as_read(request):
 
 
 
-
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def marcar_com_recompensa(request):
+    """
+    Marca a missão como concluída e concede a recompensa correspondente.
+    Payload:
+    {
+        "id": 123,             # id da notificação/mission
+        "reward_type": "xp",   # opcional, default: "xp"
+        "amount": 10           # opcional, default: 10
+    }
+    """
     notif_id = request.data.get("id")
     user = request.user
+    reward_type = request.data.get("reward_type", "xp")
+    amount = request.data.get("amount", 10)
 
     notif = get_object_or_404(Notification, id=notif_id, user=user)
 
-    # Marca como lida
+    # ✅ Marca como lida
     if not notif.is_read:
         notif.is_read = True
         notif.save(update_fields=["is_read"])
 
-    # Cria reward e concede
+    # ✅ Cria reward vinculado à notificação
     reward = Reward.objects.create(
         user=user,
-        reward_type="xp",  # ou passe do payload
-        amount=10,
+        reward_type=reward_type,
+        amount=amount,
+        mission_code=notif.title,  # opcional: vincula pelo título da missão
         notification=notif
     )
     result = RewardService().grant(reward)
 
+    # ✅ Atualiza a notificação com informações da recompensa
+    notif.reward_text = f"{reward.get_reward_type_display()} ganho!"
+    notif.reward_count = reward.amount or 1
+    notif.save(update_fields=["reward_text", "reward_count"])
+
+    # ✅ Envia notificação em tempo real (opcional)
+    from notifications.utils import enviar_notificacao
+    enviar_notificacao(
+        user_id=user.id,
+        titulo=notif.title,
+        descricao=notif.message,
+        tipo=notif.notification_type
+    )
+
     return Response({
-        "message": "Notificação marcada e recompensa concedida",
+        "message": "Missão marcada e recompensa concedida",
         "reward": {
             "id": result.reward.id,
             "type": result.reward.reward_type,
             "amount": result.reward.amount,
+            "mission_code": result.reward.mission_code,
         },
         "notification_created_id": result.notification.id,
     })

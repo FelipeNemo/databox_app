@@ -1,6 +1,4 @@
-
-
-
+/* ===================== Títulos ===================== */
 .gamification-panel h2,
 .mission-panel h2 {
   text-align: center;
@@ -9,6 +7,7 @@
   font-size: 1.5rem;
 }
 
+/* ===================== Layout Geral ===================== */
 .gamification-wrapper {
   display: flex;
   justify-content: center;
@@ -25,7 +24,7 @@
 .gamification-panel,
 .mission-panel {
   background-color: #f9f9f9;
-  height: 200px;   
+  height: 200px;
   padding: 20px;
   width: 594px;
   box-shadow: 0 0px 2px rgba(0, 0, 0, 0.7);
@@ -33,66 +32,39 @@
   flex-direction: column;
 }
 
-/* ✅ PERMITE SCROLL INTERNO EM MISSÕES */
+/* ===================== Missões ===================== */
 .mission-panel {
   overflow-y: auto;
 }
 
-.progress-bar-container {
-  background-color: #ddd;
-  border-radius: 2px;
-  height: 5px;
-  overflow: hidden;
-  margin-top: 4px;
-}
-
-.progress-bar.xp {
-  background-color: #04a6f1;
-  height: 100%;
-}
-
-.progress-bar.health {
-  background-color: #03fc24;
-  height: 100%;
-}
-
-.coin-display {
-  margin-top: 10px;
-  font-size: 16px;
-}
-
-.mission-panel p {
-  font-size: 8px;
-  margin-bottom: 4px;
-}
-
 .mission-item {
   display: flex;
-  flex-direction: row; /* ADICIONADO para empilhar título + botões */
-  gap: 40px;               /* ADICIONADO para espaçamento interno */
-  padding: 2px 10px;      /* ADICIONADO */
+  flex-direction: row;
+  gap: 40px;
+  padding: 2px 10px;
   background-color: #fff;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
-  margin-bottom: 12px;     /* ADICIONADO para espaçamento entre missões */
+  margin-bottom: 12px;
   font-size: 16px;
 }
 
 .mission-inline {
   display: flex;
   align-items: center;
-  gap: 30px; /* AUMENTADO para mais espaço entre círculo e texto */
+  gap: 30px;
 }
 
 .mission-title {
   flex: 1;
   font-weight: 400;
   font-size: 1rem;
+  word-break: break-word;
+  margin-left: 10px;
 }
 
-/* NOVO estilo para o círculo com progresso visual */
 .mission-progress-circle {
-  width: 36px;                        /* ADICIONADO - maior */
-  height: 36px;                       /* ADICIONADO - maior */
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background-color: #ddd;
   display: flex;
@@ -103,49 +75,61 @@
   position: relative;
 }
 
-/* Texto dentro do círculo com z-index */
 .progress-text {
-  z-index: 1;         /* ADICIONADO */
-  color: black;       /* ADICIONADO */
+  z-index: 1;
+  color: black;
 }
 
-/* Botões de ação com ícones */
 .mission-actions {
   display: flex;
-  justify-content: flex-end;  /* ADICIONADO */
-  gap: 36px;                  /* ADICIONADO */
+  justify-content: flex-end;
+  gap: 12px;
 }
 
 .mission-actions button {
-  margin-right: 20px;             /* AJUSTADO */
-  margin-bottom: 0px;            /* AJUSTADO */
   background-color: #fbfbfb;
   border: none;
   padding: 6px 12px;
-  border-radius: 1px;          /* AJUSTADO */
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 1rem;             /* AUMENTADO */
-  display: flex;               /* ADICIONADO */
-  align-items: center;         /* ADICIONADO */
-  transition: transform 0.2s;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s, background-color 0.2s;
 }
 
 .mission-actions button:hover {
   background-color: #088bf67f;
-  transform: scale(1.1);       /* ADICIONADO leve zoom no hover */
+  transform: scale(1.1);
 }
 
-
-/* Título da missão (à direita dos botões) */
-.mission-title {
-  flex: 1;
-  margin-left: 30px;
-  word-break: break-word;
+/* ===================== Barras de Progresso ===================== */
+.progress-section {
+  margin-bottom: 16px;
 }
 
-/* Container dos botões */
-.mission-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: -50px;
+.progress-bar-container {
+  background-color: #bebbbb46;
+  border-radius: 4px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.progress-bar.xp {
+  background: linear-gradient(90deg, #04a6f1, #00d4ff);
+  height: 100%;
+  display: block;
+  transition: width 0.5s ease-in-out;
+}
+
+.progress-bar.health {
+  background: linear-gradient(90deg, #03fc24, #00ff7f);
+  height: 100%;
+  display: block;
+  transition: width 0.5s ease-in-out;
+}
+
+/* ===================== Coins ===================== */
+.coin-display {
+  font-size: 16px;
 }
