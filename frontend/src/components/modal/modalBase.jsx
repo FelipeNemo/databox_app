@@ -1,64 +1,42 @@
-import React, { useEffect } from 'react';
-import { FiAlertCircle } from 'react-icons/fi';
-import './modal.css';
-import { useTopbarAdm } from '../hook/useTopbarAdm';
+import React, { useEffect } from "react";
+import { FiX } from "react-icons/fi";
+import "./modal.css";
 
-const ModalBase = ({
-  isOpen,
-  onClose,
-  children,
-  showHeader = true,
-  title = 'NOTIFICAÇÃO',
-  icon = <FiAlertCircle size={25} style={{ color: '#f1f1f1ff', marginRight: '5px' }} />,
-  sound = '/sounds/mixkit-interface-device-click-2577.wav',
-  buttons = ['OK'] // opções: ['OK'], ['Sim', 'Não'], ou [] para nenhum botão
-}) => {
-  const { playClickSound } = useTopbarAdm();
-
+const ModalBase = ({ isOpen, onClose, title, icon, children, showHeader = true }) => {
+  
+  // Fecha o modal ao apertar ESC
   useEffect(() => {
-    if (isOpen && sound) {
-      const notifySound = new Audio(sound);
-      notifySound.play().catch((err) => console.warn('Erro ao tocar som:', err));
-    }
-  }, [isOpen, sound]);
+    if (!isOpen) return;
+    const handleEsc = (e) => {
+      if (e.key === "Escape") onClose?.();
+    };
+    document.addEventListener("keydown", handleEsc);
+    return () => document.removeEventListener("keydown", handleEsc);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
-  const handleOutsideClick = (e) => {
-    if (e.target.className === 'modal-overlay') {
-      playClickSound();
+  // Fecha modal ao clicar fora do conteúdo
+  const handleOverlayClick = (e) => {
+    if (e.target.classList.contains("modal-overlay")) {
       onClose?.();
     }
   };
 
-  const handleClick = (callback) => {
-    playClickSound();
-    callback?.();
-  };
-
   return (
-    <div className="modal-overlay" onClick={handleOutsideClick}>
+    <div className="modal-overlay" onClick={handleOverlayClick}>
       <div className="modal-content">
-        <button className="modal-close" onClick={() => handleClick(onClose)}>✖</button>
-
         {showHeader && (
           <div className="modal-header">
-            {icon}
-            <strong>{title}</strong>
+            <div className="modal-title">
+              {icon} <span>{title}</span>
+            </div>
+            <button className="modal-close" onClick={onClose}>
+              <FiX size={20} />
+            </button>
           </div>
         )}
-
         <div className="modal-body">{children}</div>
-
-        {buttons.length > 0 && (
-          <div className="modal-actions">
-            {buttons.map((btnLabel) => (
-              <button key={btnLabel} className="btn" onClick={() => handleClick(onClose)}>
-                {btnLabel}
-              </button>
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );

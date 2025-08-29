@@ -67,7 +67,7 @@
 
 
 .modal-notificacao-content .modal-actions button {
-  background-color: #007bff;
+  background: linear-gradient(10deg, #0b7ff4, #110823);
   color: white;
   border: none;
   padding: 8px 16px;
@@ -79,4 +79,23 @@
 
 .modal-notificacao-content .modal-actions button:hover {
   background-color: #0056b3;
+}
+
+
+.modal-recompensa-content button {
+  background: linear-gradient(15deg, #0b7ff4, #110823); /* degradê amarelo/laranja */
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.modal-recompensa-content button:hover {
+  
+  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
 }
