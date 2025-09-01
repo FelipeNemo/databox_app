@@ -1,27 +1,11 @@
 #rewards/views.py
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework import status
-from .models import Reward
-from .serializers import RewardSerializer
-from .services import RewardService
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from notifications.utils import enviar_notificacao
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
-from notifications.models import Notification
-from rewards.models import Reward
-from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from notifications.models import Notification
 from rewards.models import Reward
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rewards.models import Reward
+from rewards.serializers import RewardSerializer
+from rewards.services import RewardService
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def my_status(request):
@@ -81,7 +65,7 @@ def grant_reward(request):
     serializer.is_valid(raise_exception=True)
     reward = serializer.save()
 
-    result = RewardService().grant(reward)
+    result = RewardService().grant(reward) # --------------------------------------------------------------- RewardService().grant(reward)
     out = RewardSerializer(result.reward).data
     out["notification_created_id"] = result.notification.id if result.notification else None
     return Response(out, status=status.HTTP_201_CREATED)
@@ -121,8 +105,9 @@ def confirm_notification_with_reward(request):
     api_endpoint = reward_payload.get("api_endpoint")
     mission_code = reward_payload.get("mission_code")
     extra_data = reward_payload.get("extra_data", {})
-
-    reward = Reward.objects.create(
+    
+    # cria reward mas já concede imediatamente
+    reward = Reward(
         user=request.user,
         reward_type=reward_type,
         amount=amount,
@@ -133,7 +118,8 @@ def confirm_notification_with_reward(request):
         extra_data=extra_data,
     )
 
-    result = RewardService().grant(reward)
+    result = RewardService().grant(reward)  # já marca granted + envia WS
+
     out = RewardSerializer(result.reward).data
     out["notification_created_id"] = result.notification.id if result.notification else None
     return Response(out, status=200)
