@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaPause, FaTrash, FaPlus } from 'react-icons/fa';
 import './gamificationStats.css';
-import api from "../../api/axios"; // 🔹 importa a instância axios
+import api from "../../api/axios";
 
 const GamificationStats = () => {
   const [level, setLevel] = useState(1);
@@ -16,51 +16,73 @@ const GamificationStats = () => {
   const [displayXpNeeded, setDisplayXpNeeded] = useState(xpNeeded);
   const [displayHealth, setDisplayHealth] = useState(health);
 
-  // 🔹 Busca status no backend
-  useEffect(() => {
-    const fetchStatus = async () => {
-      try {
-        const resp = await api.get("/rewards/my_status/");
-        const data = resp.data;
+  // 🔹 Fetch inicial
+  const fetchStatus = async () => {
+    try {
+      const resp = await api.get("/rewards/my_status/");
+      const data = resp.data;
 
-        setLevel(data.level);
-        setXpCurrent(data.xp_current);
-        setXpNeeded(data.xp_needed);
-        setHealth(data.vitalidade);
-        setCoins(data.coins);
-        setMissions(data.missions || []);
+      setLevel(data.level);
+      setXpCurrent(data.xp_current);
+      setXpNeeded(data.xp_needed);
+      setHealth(data.vitalidade);
+      setCoins(data.coins);
+      setMissions(data.missions || []);
+    } catch (err) {
+      console.error("Erro ao carregar status:", err);
+    }
+  };
+
+  useEffect(() => { fetchStatus(); }, []);
+
+  // 🔹 WebSocket para notificações incrementais
+  useEffect(() => {
+    const socket = new WebSocket("ws://localhost:8000/ws/notifications/");
+
+    socket.onmessage = (event) => {
+      try {
+        const msg = JSON.parse(event.data);
+        if (msg.tipo === "reward") {
+          const { reward_type, amount } = msg.reward;
+
+          if (reward_type === "xp") setXpCurrent(prev => prev + amount);
+          if (reward_type === "vitalidade") setHealth(prev => prev + amount);
+          if (reward_type === "coin") setCoins(prev => prev + amount);
+        }
       } catch (err) {
-        console.error("Erro ao carregar status:", err);
+        console.error("Erro processando WS:", err);
       }
     };
-    fetchStatus();
+
+    return () => socket.close();
   }, []);
 
-  // 🔹 animações XP e Vitalidade mantêm iguais...
+  // 🔹 Animações
   useEffect(() => {
-    let animationFrame;
+    let frame;
     const animateXp = () => {
       if (displayXp < xpCurrent) {
         setDisplayXp(prev => Math.min(prev + 1, xpCurrent));
-        animationFrame = requestAnimationFrame(animateXp);
+        frame = requestAnimationFrame(animateXp);
       }
     };
     animateXp();
-    return () => cancelAnimationFrame(animationFrame);
+    return () => cancelAnimationFrame(frame);
   }, [displayXp, xpCurrent]);
 
   useEffect(() => {
-    let animationFrame;
+    let frame;
     const animateHealth = () => {
       if (displayHealth < health) {
         setDisplayHealth(prev => Math.min(prev + 1, health));
-        animationFrame = requestAnimationFrame(animateHealth);
+        frame = requestAnimationFrame(animateHealth);
       }
     };
     animateHealth();
-    return () => cancelAnimationFrame(animationFrame);
+    return () => cancelAnimationFrame(frame);
   }, [displayHealth, health]);
 
+  // 🔹 Nível
   useEffect(() => {
     if (displayXp >= displayXpNeeded) {
       setDisplayXp(displayXp - displayXpNeeded);
@@ -69,93 +91,48 @@ const GamificationStats = () => {
     }
   }, [displayXp, displayLevel, displayXpNeeded]);
 
-  const xpPercentDynamic = (displayXp / displayXpNeeded) * 100;
+  const xpPercent = (displayXp / displayXpNeeded) * 100;
   const healthPercent = Math.min((displayHealth / 560) * 100, 100);
-
-  const completeMission = async (missionId) => {
-    try {
-      const resp = await api.post("/rewards/mark_with_reward/", {
-        id: missionId
-      });
-
-      const data = resp.data;
-      setMissions(prev => prev.map(m => m.id === missionId ? { ...m, progress: 100 } : m));
-
-      if (data.reward) {
-        if (data.reward.type === "xp") setXpCurrent(prev => prev + data.reward.amount);
-        if (data.reward.type === "vitality") setHealth(prev => prev + data.reward.amount);
-        if (data.reward.type === "coin") setCoins(prev => prev + data.reward.amount);
-      }
-    } catch (err) {
-      console.error("Erro ao concluir missão:", err);
-    }
-  };
 
   return (
     <div className="gamification-wrapper">
       <div className="gamification-panel-container">
-        {/* Painel de Status */}
         <div className="gamification-panel">
           <h2>Status</h2>
-
-          {/* Barra XP */}
           <div className="progress-section">
             <label>Level {displayLevel}</label>
             <div className="progress-bar-container">
-              <div
-                className="progress-bar xp"
-                style={{ width: `${xpPercentDynamic}%` }}
-              >&nbsp;</div>
+              <div className="progress-bar xp" style={{ width: `${xpPercent}%` }}></div>
             </div>
             <small>{displayXp} / {displayXpNeeded} XP</small>
           </div>
 
-          {/* Barra Vitalidade */}
           <div className="progress-section">
             <label>Vitalidade</label>
             <div className="progress-bar-container">
-              <div
-                className="progress-bar health"
-                style={{ width: `${healthPercent}%` }}
-              >&nbsp;</div>
+              <div className="progress-bar health" style={{ width: `${healthPercent}%` }}></div>
             </div>
             <small>{displayHealth} / 560 (Últimos 7 dias)</small>
           </div>
 
-          {/* Coins */}
           <div className="coin-display">
             <label>Moedas:</label> <span>{coins} 🪙</span>
           </div>
         </div>
 
-        {/* Painel de Missões */}
         <div className="mission-panel">
           <h2>Missões</h2>
-          {missions.length > 0 ? (
-            missions.map(mission => (
-              <div className="mission-item" key={mission.id}>
-                <div className="mission-inline">
-                  <div
-                    className="mission-progress-circle"
-                    style={{
-                      background: `conic-gradient(#4caf50 ${mission.progress}%, #ddd ${mission.progress}%)`
-                    }}
-                  >
-                    <span className="progress-text">{mission.progress}%</span>
-                  </div>
-                  <span className="mission-title">{mission.title}</span>
+          {missions.length > 0 ? missions.map(m => (
+            <div className="mission-item" key={m.id}>
+              <div className="mission-inline">
+                <div className="mission-progress-circle"
+                     style={{ background: `conic-gradient(#4caf50 ${m.progress}%, #ddd ${m.progress}%)` }}>
+                  <span className="progress-text">{m.progress}%</span>
                 </div>
-
-                <div className="mission-actions">
-                  <button onClick={() => completeMission(mission.id)}><FaPlus /></button>
-                  <button><FaPause /></button>
-                  <button><FaTrash /></button>
-                </div>
+                <span className="mission-title">{m.title}</span>
               </div>
-            ))
-          ) : (
-            <p>Nenhuma missão disponível.</p>
-          )}
+            </div>
+          )) : <p>Nenhuma missão disponível.</p>}
         </div>
       </div>
     </div>

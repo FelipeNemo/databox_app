@@ -48,6 +48,7 @@ class Reward(models.Model):
         self.status = self.STATUS_GRANTED
         self.granted_at = timezone.now()
         self.save(update_fields=["status", "granted_at"])
+        print(f"Reward {self.id} marcada como granted para {self.user}")
 
     def __str__(self):
         return f"{self.get_reward_type_display()} -> {self.user} [{self.status}]"

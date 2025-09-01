@@ -57,17 +57,16 @@ class RewardService:
         return GrantResult(reward=reward, notification=notif)
 
     # ===== Handlers (substitua pelo seu domínio real) =====
+    # ===== Handlers =====
     def _add_xp(self, reward: Reward):
-        # TODO: integre com seu perfil de usuário (ex.: user.profile.add_xp)
-        # Exemplo fictício:
-        # profile = reward.user.profile
-        # profile.xp += (reward.amount or 0)
-        # profile.save(update_fields=["xp"])
-        pass
+        profile = reward.user.profile  # 🔹 pega o perfil do usuário
+        profile.xp += reward.amount or 0  # 🔹 adiciona XP
+        profile.save(update_fields=["xp"])  # 🔹 salva no DB
 
     def _add_coin(self, reward: Reward):
-        # TODO: integre com seu sistema de carteira/saldo
-        pass
+        profile = reward.user.profile
+        profile.coins += reward.amount or 0
+        profile.save(update_fields=["coins"])
 
     def _give_item(self, reward: Reward):
         # TODO: integre com seu inventário (ex.: reward.user.inventory.add_item(reward.item_code))
@@ -75,7 +74,6 @@ class RewardService:
 
     def _open_lootbox(self, reward: Reward):
         # TODO: implemente a lógica de loot (sorteio) e adição ao inventário
-        # Você pode salvar no extra_data o resultado do loot.
         result_item = reward.extra_data.get("loot_item", "item_aleatorio")
         reward.extra_data["loot_item"] = result_item
 
