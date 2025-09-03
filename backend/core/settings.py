@@ -34,6 +34,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 ]
 
+
+STATICFILES_DIRS = [BASE_DIR / "static"]
+
 # ---------------------------
 # Middlewares
 # ---------------------------

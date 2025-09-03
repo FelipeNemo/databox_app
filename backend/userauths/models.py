@@ -42,6 +42,7 @@ class Profile(models.Model):
     address = models.CharField(max_length=100, null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
     pid = ShortUUIDField(unique=True, length=10, max_length=20, alphabet="abcdefghijk")
+    
 
     def __str__(self):
         return self.user.full_name or self.user.email

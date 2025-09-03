@@ -6,4 +6,4 @@ class RewardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reward
         fields = "__all__"
-        read_only_fields = ["status", "created_at", "granted_at"]
+        read_only_fields = ["created_at", "granted_at"]  # status agora pode ser alterado

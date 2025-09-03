@@ -23,6 +23,9 @@ def reward_for_notification(sender, instance, created, **kwargs):
         return
 
     notif_title = getattr(instance, "title", None) or "Recompensa"
+    # AJUSTAR AS NOTIFICAÇÕES PARA TER TÍTULOS PADRÃO
+    # ELAS ESTÃO SAINDO COM APENASESSE 10 DE XP.... dESCUBRA COMO CRIAR NOTIFICAÇÕES E INTEGRAR ALEATÓRIEDADE E IA. sE PRECISO CRIE UM
+    # ARQUIVO PARA CRIAR O TEMPLATE DE NOTIFICAÇÃO ASSOCIADA A RECOMPENSAS ALEATORIAS.
     reward_config = REWARD_MAPPING.get(notif_title, {"vitalidade": 0, "xp": 10, "moedas": 0})
 
     # Cria cada tipo de recompensa

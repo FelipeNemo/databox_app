@@ -6,14 +6,15 @@ from notifications.models import Notification
 from rewards.models import Reward
 from rewards.serializers import RewardSerializer
 from rewards.services import RewardService
+from django.shortcuts import get_object_or_404
+
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def my_status(request):
     user = request.user
 
-    # Garante que estamos filtrando com os valores reais do banco (minúsculos)
     rewards = Reward.objects.filter(user=user, status="granted")
-
     total_xp = sum(r.amount for r in rewards.filter(reward_type="xp"))
     coins = sum(r.amount for r in rewards.filter(reward_type="coin"))
     vitality = sum(r.amount for r in rewards.filter(reward_type="vitalidade"))
@@ -30,14 +31,17 @@ def my_status(request):
     xp_current = xp_accumulated
     xp_progress = round((xp_current / xp_needed) * 100, 2)
 
+    # 🔹 MISSÕES (pode ser substituído por query real depois)
+    missions = []  # ou pegar do banco se tiver modelo Mission
+
     return Response({
         "level": level,
         "xp_current": xp_current,
         "xp_needed": xp_needed,
         "xp_progress": xp_progress,
         "coins": coins,
-        "vitalidade": min(vitality, 560),  # limite de Vitalidade
-        # debug opcional
+        "vitalidade": min(vitality, 560),
+        "missions": missions,
         "debug_rewards": list(rewards.values("id", "reward_type", "amount", "status")),
     })
 
@@ -73,56 +77,45 @@ def grant_reward(request):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def confirm_notification_with_reward(request):
-    """
-    Fluxo para seu botão 'Ok': marca a notificação como lida
-    e concede uma recompensa (parâmetros opcionais para personalizar a recompensa).
-
-    Payload exemplo:
-    {
-      "notification_id": 123,
-      "reward": {
-        "reward_type": "xp",
-        "amount": 10
-      }
-    }
-    Se "reward" não vier, dá um XP padrão (ex.: 10).
-    """
     notif_id = request.data.get("notification_id")
     if not notif_id:
         return Response({"error": "notification_id é obrigatório"}, status=400)
 
+    # 🔹 Busca a notificação do usuário
     notif = get_object_or_404(Notification, id=notif_id, user=request.user)
 
-    # Marca como lida
+    # 🔹 Marca como lida se ainda não estiver
     if not notif.is_read:
         notif.is_read = True
         notif.save(update_fields=["is_read"])
 
+    # 🔹 Pega dados do reward do payload ou define defaults
     reward_payload = request.data.get("reward") or {}
     reward_type = reward_payload.get("reward_type", "xp")
     amount = reward_payload.get("amount", 10)
-    item_code = reward_payload.get("item_code")
-    api_endpoint = reward_payload.get("api_endpoint")
-    mission_code = reward_payload.get("mission_code")
     extra_data = reward_payload.get("extra_data", {})
-    
-    # cria reward mas já concede imediatamente
-    reward = Reward(
+
+    # 🔹 Cria o reward vinculado ao usuário
+    reward = Reward.objects.create(
         user=request.user,
         reward_type=reward_type,
         amount=amount,
-        item_code=item_code,
-        api_endpoint=api_endpoint,
-        mission_code=mission_code,
-        notification=notif,
-        extra_data=extra_data,
+        extra_data=extra_data
     )
 
-    result = RewardService().grant(reward)  # já marca granted + envia WS
+    # 🔹 Concede a recompensa de forma segura
+    RewardService().grant(reward)
 
-    out = RewardSerializer(result.reward).data
-    out["notification_created_id"] = result.notification.id if result.notification else None
+    # 🔹 Atualiza a notificação com infos do reward (opcional)
+    notif.reward_text = f"{reward.get_reward_type_display()} ganho!"
+    notif.reward_count = reward.amount or 1
+    notif.save(update_fields=["reward_text", "reward_count"])
+
+    # 🔹 Retorna o resultado para o front
+    out = RewardSerializer(reward).data
+    out["notification_created_id"] = notif.id
     return Response(out, status=200)
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])

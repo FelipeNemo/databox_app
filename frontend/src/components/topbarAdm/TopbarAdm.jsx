@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import api from "../../api/axios";
-
 import ModalBase from '../modal/modalBase';
 import Inventario from '../inventario/Inventario';
 import Menu from '../Menu/Menu';
@@ -10,7 +9,10 @@ import Logo from "../../assets/images/logo.png";
 import { useTopbarAdm } from '../hook/useTopbarAdm';
 
 const TopbarAdm = () => {
-  const {playClickSound, playRewardSound, normalizeNotification } = useTopbarAdm();
+  // 🔹 Hooks personalizados e sons
+  const { playClickSound, playRewardSound, normalizeNotification } = useTopbarAdm();
+
+  // 🔹 Estados principais
   const [notifications, setNotifications] = useState([]);
   const [inventarioOpen, setInventarioOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -23,18 +25,17 @@ const TopbarAdm = () => {
 
   const [modalNotificacaoAutoOpen, setModalNotificacaoAutoOpen] = useState(true);
 
-
+  // 🔹 Refs
   const wsRef = useRef(null);
   const reconnectTimerRef = useRef(null);
   const reconnectAttemptsRef = useRef(0);
-
-  // 🔹 Ref para modalNotificacaoOpen (evita abrir várias ao mesmo tempo)
   const modalNotificacaoOpenRef = useRef(modalNotificacaoOpen);
+
   useEffect(() => {
     modalNotificacaoOpenRef.current = modalNotificacaoOpen;
   }, [modalNotificacaoOpen]);
 
-  // 🔹 Buscar notificações iniciais via REST
+  // 🔹 Fetch inicial de notificações
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
@@ -43,24 +44,92 @@ const TopbarAdm = () => {
         const normalizadas = lista.map(normalizeNotification);
         setNotifications(normalizadas);
 
-        // 🔹 AQUI É O TRECHO QUE VAI MUDAR
         if (normalizadas.length > 0 && modalNotificacaoAutoOpen) {
           setNotificacaoSelecionada(normalizadas[0]);
           setModalNotificacaoOpen(true);
-          playClickSound()
-          setModalNotificacaoAutoOpen(false); // impede reabertura automática
+          playClickSound();
+          setModalNotificacaoAutoOpen(false);
         }
       } catch (error) {
         console.error("Erro ao buscar notificações:", error);
       }
     };
     fetchNotifications();
-  }, [normalizeNotification, modalNotificacaoAutoOpen, playClickSound]); // ⚠️ adicionar modalNotificacaoAutoOpen aqui
+  }, [normalizeNotification, modalNotificacaoAutoOpen, playClickSound]);
 
+  // 🔹 Funções de fechamento de modais
   const fecharModalNotificacao = () => {
     setModalNotificacaoOpen(false);
     setNotificacaoSelecionada(null);
-    setModalNotificacaoAutoOpen(false); // evita que reabra sozinho
+    setModalNotificacaoAutoOpen(false);
+  };
+
+  const fecharRecompensa = () => {
+    setModalRecompensaOpen(false);
+    setRecompensaSelecionada(null);
+  };
+
+  // 🔹 Abrir modal de notificação
+  const abrirModalNotificacao = (notif) => {
+    setNotificacaoSelecionada(notif);
+    setModalNotificacaoOpen(true);
+    setDropdownOpen(false);
+    playClickSound();
+  };
+
+  // 🔹 Marcar notificação como lida e abrir recompensa se houver
+  const marcarComoLida = async () => {
+    if (notificacaoSelecionada?.id) {
+      try {
+        await api.post("/notifications/mark_as_read/", { id: notificacaoSelecionada.id });
+        setNotifications(prev =>
+          prev.map(n => n.id === notificacaoSelecionada.id ? { ...n, is_read: true } : n)
+        );
+      } catch (err) {
+        console.error("Erro ao marcar notificação como lida:", err);
+      }
+    }
+
+    setModalNotificacaoOpen(false);
+
+    if (
+      notificacaoSelecionada?.tipo === "reward" ||
+      notificacaoSelecionada?.reward_text ||
+      notificacaoSelecionada?.rewards > 0
+    ) {
+      setRecompensaSelecionada(notificacaoSelecionada);
+      setModalRecompensaOpen(true);
+      playRewardSound();
+    } else {
+      setNotificacaoSelecionada(null);
+    }
+  };
+
+  // 🔹 Confirmar recompensa
+  const confirmarReward = async () => {
+    if (!recompensaSelecionada) return;
+    try {
+      await api.post("/rewards/confirm_notification/", {
+        notification_id: recompensaSelecionada.id,
+        reward: {
+          reward_type: recompensaSelecionada.reward_type,
+          amount: recompensaSelecionada.amount,
+          item_code: recompensaSelecionada.item_code,
+          mission_code: recompensaSelecionada.mission_code,
+          api_endpoint: recompensaSelecionada.api_endpoint,
+          extra_data: recompensaSelecionada.extra_data,
+        }
+      });
+
+      setNotifications(prev =>
+        prev.map(n => n.id === recompensaSelecionada.id ? { ...n, is_read: true } : n)
+      );
+
+      setModalRecompensaOpen(false);
+      setRecompensaSelecionada(null);
+    } catch (err) {
+      console.error("Erro ao conceder recompensa:", err);
+    }
   };
 
   // 🔹 WebSocket para notificações em tempo real
@@ -86,12 +155,12 @@ const TopbarAdm = () => {
         try {
           const raw = JSON.parse(event.data);
           const data = normalizeNotification(raw);
-
           setNotifications(prev => [data, ...prev]);
+
           if (!modalNotificacaoOpenRef.current) {
             setNotificacaoSelecionada(data);
             setModalNotificacaoOpen(true);
-            playClickSound()
+            playClickSound();
           }
         } catch (err) {
           console.warn("Mensagem WS inválida:", err);
@@ -116,50 +185,7 @@ const TopbarAdm = () => {
     };
   }, [normalizeNotification, playClickSound]);
 
-  // 🔹 Abre modal de notificação
-  const abrirModalNotificacao = (notif) => {
-    setNotificacaoSelecionada(notif);
-    setModalNotificacaoOpen(true);
-    setDropdownOpen(false);
-    playClickSound();
-  };
-
-  // 🔹 Marca como lida e abre recompensa se existir
-  const marcarComoLida = async () => {
-    if (notificacaoSelecionada?.id) {
-      try {
-        await api.post("/notifications/mark_as_read/", { id: notificacaoSelecionada.id });
-        setNotifications(prev =>
-          prev.map(n => n.id === notificacaoSelecionada.id ? { ...n, is_read: true } : n)
-        );
-      } catch (err) {
-        console.error("Erro ao marcar notificação como lida:", err);
-      }
-    }
-
-    // Fecha a notificação
-    setModalNotificacaoOpen(false);
-
-    // Se tiver recompensa, abre em seguida
-    if (
-      notificacaoSelecionada?.tipo === "reward" ||
-      notificacaoSelecionada?.reward_text ||
-      notificacaoSelecionada?.rewards > 0
-    ) {
-      setRecompensaSelecionada(notificacaoSelecionada);
-      setModalRecompensaOpen(true);
-      playRewardSound();
-    } else {
-      setNotificacaoSelecionada(null);
-    }
-  };
-
-  // 🔹 Fecha recompensa
-  const fecharRecompensa = () => {
-    setModalRecompensaOpen(false);
-    setRecompensaSelecionada(null);
-  };
-
+  // 🔹 Render
   return (
     <div className="topbar-adm" style={{ position: 'fixed', top: 0, width: '100%', height: '60px', backgroundColor: '#00000078', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 20px', zIndex: 1000 }}>
       
@@ -208,10 +234,9 @@ const TopbarAdm = () => {
         <Menu />
       </div>
 
-      {/* Modal de Inventário */}
+      {/* Modais */}
       <ModalBase
         isOpen={inventarioOpen}
-        
         onClose={() => setInventarioOpen(false)}
         title="INVENTÁRIO"
         icon={<FiBox size={25} style={{ marginRight: '8px', verticalAlign: 'middle' }} />}
@@ -221,7 +246,6 @@ const TopbarAdm = () => {
         <Inventario />
       </ModalBase>
 
-      {/* Modal de Notificação */}
       <ModalBase
         isOpen={modalNotificacaoOpen}
         onClose={fecharModalNotificacao} 
@@ -241,7 +265,6 @@ const TopbarAdm = () => {
         )}
       </ModalBase>
 
-      {/* Modal de Recompensa */}
       <ModalBase
         isOpen={modalRecompensaOpen}
         onClose={fecharRecompensa}
@@ -255,11 +278,13 @@ const TopbarAdm = () => {
             <h3>{recompensaSelecionada.titulo}</h3>
             <p>{recompensaSelecionada.reward_text}</p>
             <div className="modal-actions">
-              <button className="recompensa-btn" onClick={() => { playRewardSound();
-                 setModalRecompensaOpen(false);
-                 setRecompensaSelecionada(null); }}>
-                Ok
-              </button>
+               <button className="recompensa-btn" onClick={async () => { 
+                 playRewardSound();
+                 await confirmarReward(); // espera a requisição
+                }}>
+                 Ok
+                </button>
+
             </div>
           </div>
         )}
