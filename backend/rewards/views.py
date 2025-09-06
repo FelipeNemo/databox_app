@@ -7,6 +7,7 @@ from rewards.models import Reward
 from rewards.serializers import RewardSerializer
 from rewards.services import RewardService
 from django.shortcuts import get_object_or_404
+from rest_framework import status
 
 
 @api_view(["GET"])
@@ -17,7 +18,8 @@ def my_status(request):
     rewards = Reward.objects.filter(user=user, status="granted")
     total_xp = sum(r.amount for r in rewards.filter(reward_type="xp"))
     coins = sum(r.amount for r in rewards.filter(reward_type="coin"))
-    vitality = sum(r.amount for r in rewards.filter(reward_type="vitalidade"))
+    vitality = sum(r.amount for r in rewards.filter(reward_type="vitality"))
+
 
     # Calcula nível
     level = 1
@@ -45,6 +47,8 @@ def my_status(request):
         "debug_rewards": list(rewards.values("id", "reward_type", "amount", "status")),
     })
 
+
+# ------------------------------------------------------------------------------------------------------------------
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -74,6 +78,8 @@ def grant_reward(request):
     out["notification_created_id"] = result.notification.id if result.notification else None
     return Response(out, status=status.HTTP_201_CREATED)
 
+
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def confirm_notification_with_reward(request):
@@ -81,40 +87,112 @@ def confirm_notification_with_reward(request):
     if not notif_id:
         return Response({"error": "notification_id é obrigatório"}, status=400)
 
-    # 🔹 Busca a notificação do usuário
     notif = get_object_or_404(Notification, id=notif_id, user=request.user)
 
-    # 🔹 Marca como lida se ainda não estiver
+    # 🔹 Marca notificação como lida
     if not notif.is_read:
         notif.is_read = True
         notif.save(update_fields=["is_read"])
 
-    # 🔹 Pega dados do reward do payload ou define defaults
-    reward_payload = request.data.get("reward") or {}
-    reward_type = reward_payload.get("reward_type", "xp")
-    amount = reward_payload.get("amount", 10)
-    extra_data = reward_payload.get("extra_data", {})
+    # 🔹 Busca recompensas vinculadas à notificação
+    rewards = Reward.objects.filter(user=request.user, notification=notif)
 
-    # 🔹 Cria o reward vinculado ao usuário
-    reward = Reward.objects.create(
-        user=request.user,
-        reward_type=reward_type,
-        amount=amount,
-        extra_data=extra_data
-    )
+    if rewards.exists():
+        # Marca todas como concedidas
+        for r in rewards:
+            r.granted = True
+            r.status = "granted"
+            r.granted_at = now()
+            r.save(update_fields=["granted", "granted_at", "status"])
+        out = RewardSerializer(rewards, many=True).data
+    else:
+        # Se não houver rewards, cria uma com payload ou default
+        reward_payload = request.data.get("reward") or {}
+        reward_type = reward_payload.get("reward_type", "xp")
+        amount = reward_payload.get("amount", 10)
+        extra_data = reward_payload.get("extra_data", {})
 
-    # 🔹 Concede a recompensa de forma segura
-    RewardService().grant(reward)
+        reward = Reward.objects.create(
+            user=request.user,
+            notification=notif,
+            reward_type=reward_type,
+            amount=amount,
+            extra_data=extra_data,
+            status="granted",   # 🔹 já nasce concedida
+            granted=True,
+            granted_at=now()
+        )
+        RewardService().grant(reward)
+        out = RewardSerializer(reward).data
 
-    # 🔹 Atualiza a notificação com infos do reward (opcional)
-    notif.reward_text = f"{reward.get_reward_type_display()} ganho!"
-    notif.reward_count = reward.amount or 1
-    notif.save(update_fields=["reward_text", "reward_count"])
+    return Response({
+        "success": True,
+        "notification_id": notif.id,
+        "rewards": out
+    })
 
-    # 🔹 Retorna o resultado para o front
-    out = RewardSerializer(reward).data
-    out["notification_created_id"] = notif.id
-    return Response(out, status=200)
+# rewards/views.py
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+from django.shortcuts import get_object_or_404
+from django.utils.timezone import now
+
+from notifications.models import Notification
+from .models import Reward
+from .serializers import RewardSerializer
+from .services import RewardService
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def confirm_notification(request):
+    notif_id = request.data.get("notification_id")
+    if not notif_id:
+        return Response({"error": "notification_id é obrigatório"}, status=400)
+
+    notif = get_object_or_404(Notification, id=notif_id, user=request.user)
+
+    # 🔹 Marca notificação como lida
+    if not notif.is_read:
+        notif.is_read = True
+        notif.save(update_fields=["is_read"])
+
+    # 🔹 Busca recompensas vinculadas
+    rewards = Reward.objects.filter(user=request.user, notification=notif)
+
+    if rewards.exists():
+        # Marca todas como concedidas
+        for r in rewards:
+            r.granted = True
+            r.status = "granted"
+            r.granted_at = now()
+            r.save(update_fields=["status", "granted_at"])
+            print(f"[DEBUG] Reward {r.id} marcada como granted")
+        out = RewardSerializer(rewards, many=True).data
+    else:
+        # Se não houver rewards, cria uma default
+        reward_payload = request.data.get("reward") or {}
+        reward_type = reward_payload.get("reward_type", "xp")
+        amount = reward_payload.get("amount", 10)
+        extra_data = reward_payload.get("extra_data", {})
+
+        reward = Reward.objects.create(
+            user=request.user,
+            notification=notif,
+            reward_type=reward_type,
+            amount=amount,
+            extra_data=extra_data
+        )
+        RewardService().grant(reward)
+        out = RewardSerializer(reward).data
+
+    return Response({
+        "success": True,
+        "notification_id": notif.id,
+        "rewards": out
+    }, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])

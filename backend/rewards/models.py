@@ -1,9 +1,14 @@
 # rewards/models.py
+
+"""O app rewards é responsável por gerenciar, conceder e calcular efeitos dos rewards (XP, moedas, vitalidade, lootbox, etc)."""
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
+from notifications.models import Notification
+
 class Reward(models.Model):
     TYPE_XP = "xp"
+    TYPE_VITALITY = "vitality"
     TYPE_COIN = "coin"
     TYPE_ITEM = "item"
     TYPE_LOOTBOX = "lootbox"
@@ -11,6 +16,7 @@ class Reward(models.Model):
 
     REWARD_TYPES = [
         (TYPE_XP, "XP"),
+        (TYPE_VITALITY, "Vitalidade"),
         (TYPE_COIN, "Moeda"),
         (TYPE_ITEM, "Item"),
         (TYPE_LOOTBOX, "Lootbox"),
@@ -18,6 +24,7 @@ class Reward(models.Model):
     ]
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    notification = models.ForeignKey(Notification, null=True, blank=True, on_delete=models.SET_NULL)
     reward_type = models.CharField(max_length=20, choices=REWARD_TYPES)
     amount = models.IntegerField(null=True, blank=True)
     item_code = models.CharField(max_length=50, blank=True, null=True)

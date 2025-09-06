@@ -105,32 +105,27 @@ const TopbarAdm = () => {
     }
   };
 
-  // 🔹 Confirmar recompensa
-  const confirmarReward = async () => {
-    if (!recompensaSelecionada) return;
-    try {
-      await api.post("/rewards/confirm_notification/", {
-        notification_id: recompensaSelecionada.id,
-        reward: {
-          reward_type: recompensaSelecionada.reward_type,
-          amount: recompensaSelecionada.amount,
-          item_code: recompensaSelecionada.item_code,
-          mission_code: recompensaSelecionada.mission_code,
-          api_endpoint: recompensaSelecionada.api_endpoint,
-          extra_data: recompensaSelecionada.extra_data,
-        }
-      });
 
-      setNotifications(prev =>
-        prev.map(n => n.id === recompensaSelecionada.id ? { ...n, is_read: true } : n)
-      );
-
-      setModalRecompensaOpen(false);
-      setRecompensaSelecionada(null);
-    } catch (err) {
-      console.error("Erro ao conceder recompensa:", err);
-    }
-  };
+// 🔹 Confirmar recompensa
+const confirmarReward = async () => {
+  if (!recompensaSelecionada) return;
+  try {
+    await api.post("/rewards/confirm_notification/", {
+      notification_id: recompensaSelecionada.id,
+    });
+    setNotifications(prev =>
+      prev.map(n =>
+        n.id === recompensaSelecionada.id
+          ? { ...n, is_read: true }
+          : n
+      )
+    );
+    setModalRecompensaOpen(false);
+    setRecompensaSelecionada(null);
+  } catch (err) {
+    console.error("Erro ao conceder recompensa:", err);
+  }
+};
 
   // 🔹 WebSocket para notificações em tempo real
   useEffect(() => {

@@ -13,8 +13,9 @@ export function useStatusGame(autoRefresh = true, refreshInterval = 10000) {
   // 🔹 Estados para animação
   const [displayXp, setDisplayXp] = useState(0);
   const [displayHealth, setDisplayHealth] = useState(0);
-  const [displayLevel] = useState(level);
+  const [displayCoins, setDisplayCoins] = useState(0);
 
+  const requestRefCoins = useRef();
   const requestRefXp = useRef();
   const requestRefHealth = useRef();
 
@@ -80,8 +81,23 @@ export function useStatusGame(autoRefresh = true, refreshInterval = 10000) {
     return () => cancelAnimationFrame(requestRefHealth.current);
   }, [health, displayHealth]);
 
+
+  useEffect(() => {
+    const animateCoins = () => {
+      if (displayCoins < coins) {
+        const increment = Math.ceil((coins - displayCoins) / 10);
+        setDisplayCoins(prev => Math.min(prev + increment, coins));
+        requestRefCoins.current = requestAnimationFrame(animateCoins);
+      }
+    };
+
+    requestRefCoins.current = requestAnimationFrame(animateCoins);
+    return () => cancelAnimationFrame(requestRefCoins.current);
+  }, [coins, displayCoins]);
+
+
   return {
-    level: displayLevel,
+    level, 
     displayXp,
     xpNeeded,
     displayHealth,
