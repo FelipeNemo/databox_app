@@ -80,4 +80,3 @@ const AreaAdministrador = () => {
 };
 
 export default AreaAdministrador;
-

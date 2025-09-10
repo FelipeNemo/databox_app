@@ -1,0 +1,1 @@
+"""se for usar celery/apscheduler"""
