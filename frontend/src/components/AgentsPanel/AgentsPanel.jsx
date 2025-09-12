@@ -1,137 +1,104 @@
 
 import React, { useState } from "react";
+import { IoMdMic, IoIosArrowForward, IoIosArrowBack,  IoIosArrowUp } from "react-icons/io";
 import "./agentsPanel.css";
-import { IoIosClose } from "react-icons/io";
 import agent1 from "../../assets/images/agent1.jpg";
 import agent2 from "../../assets/images/agent2.jpg";
 import agent3 from "../../assets/images/agent3.jpg";
 
-// Lista de agentes com imagens
 const agents = [
-  {
-    name: "Computador",
-    image: agent1,
-  },
-  {
-    name: "Tony",
-    image: agent2,
-  },
-  {
-    name: "Diana",
-    image: agent3,
-  },
+  { name: "Computador", image: agent1 },
+  { name: "Tony", image: agent2 },
+  { name: "Diana", image: agent3 },
 ];
 
+const triggers = ["Ajuda", "Informações"];
+
 const AgentsPanel = () => {
-  const [open, setOpen] = useState(false);
-  const [selectedAgent, setSelectedAgent] = useState(null);
-  const [messages, setMessages] = useState({});
+  const [selectedAgent, setSelectedAgent] = useState(agents[0]);
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  const handleSend = () => {
-    if (!input.trim()) return;
-
-    const newMessages = {
-      ...messages,
-      [selectedAgent.name]: [
-        ...(messages[selectedAgent.name] || []),
-        { from: "user", text: input },
-      ],
-    };
-
-    setMessages(newMessages);
+  const handleSend = (msgText = input) => {
+    if (!msgText.trim()) return;
+    setMessages(prev => [...prev, { from: "user", text: msgText, agent: selectedAgent.name }]);
     setInput("");
-
-    // Resposta automática (exemplo)
     setTimeout(() => {
-      setMessages((prev) => ({
-        ...prev,
-        [selectedAgent.name]: [
-          ...prev[selectedAgent.name],
-          { from: "agent", text: "Recebido!" },
-        ],
-      }));
+      setMessages(prev => [...prev, { from: "agent", text: `Resposta automática: ${msgText}`, agent: selectedAgent.name }]);
     }, 1000);
   };
 
+  const handleTriggerClick = (word) => handleSend(word);
+  const handleMicClick = () => alert("Microfone ativado!");
+
   return (
-    <div className="agents-panel-container">
-      <button
-        className="open-button"
-        onClick={() => {
-          setOpen(!open);
-          setSelectedAgent(null);
-        }}
-      >
-        {open ? (
-          <IoIosClose size={26} />
-        ) : (
-          <div className="chat-launcher">
-            <div className="avatar-wrapper">
-              {agents.slice(0, 3).map((agent, index) => (
-                <img
-                  key={index}
-                  src={agent.image}
-                  alt={agent.name}
-                  className="avatar-img"
-                  style={{ left: `${index * 15}px`, zIndex: 3 - index }}
-                />
+    <div className="chat-floating-container">
+      <div className="chat-panel">
+        <div className="chat-header">
+          <img src={selectedAgent.image} alt={selectedAgent.name} />
+          <span>{selectedAgent.name}</span>
+          <button className="toggle-chat-btn" onClick={() => setIsOpen(!isOpen)}>
+            < IoIosArrowUp size={20} />
+          </button>
+        </div>
+
+        {isOpen && (
+          <div className="chat-body">
+            {/* Side Bar de Agentes */}
+            <div className={`agents-sidebar ${isSidebarOpen ? "open" : "closed"}`}>
+              <button className="toggle-sidebar-btn" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+                {isSidebarOpen ? <IoIosArrowBack /> : <IoIosArrowForward />}
+              </button>
+              {isSidebarOpen && agents.map((agent, idx) => (
+                <button
+                  key={idx}
+                  className={`trigger-btn ${selectedAgent.name === agent.name ? "active" : ""}`}
+                  onClick={() => setSelectedAgent(agent)}
+                >
+                  <img src={agent.image} alt={agent.name} className="agent-avatar" />
+                  {agent.name}
+                </button>
               ))}
             </div>
-            <span className="launcher-label">Agentes</span>
+
+            {/* Área de mensagens */}
+            <div className="chat-content">
+              <div className="chat-messages">
+                {messages.map((msg, idx) => (
+                  <div key={idx} className={`message ${msg.from}`}>
+                    <strong>{msg.from === "agent" ? msg.agent : "Você"}: </strong>
+                    {msg.text}
+                  </div>
+                ))}
+              </div>
+
+              <div className="chat-input">
+                <input
+                  type="text"
+                  placeholder="Digite uma mensagem..."
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSend()}
+                />
+                <button onClick={() => handleSend()}>Enviar</button>
+                <button className="mic-btn" onClick={handleMicClick}>
+                  <IoMdMic size={20} />
+                </button>
+              </div>
+
+              <div className="triggers">
+                {triggers.map((word, idx) => (
+                  <button key={idx} className="trigger-btn" onClick={() => handleTriggerClick(word)}>
+                    {word}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         )}
-      </button>
-
-      {open && !selectedAgent && (
-        <div className="agents-panel">
-          <h3>Agentes</h3>
-          <ul>
-            {agents.map((agent, index) => (
-              <li key={index} onClick={() => setSelectedAgent(agent)}>
-                <img
-                  src={agent.image}
-                  alt={agent.name}
-                  className="agent-avatar"
-                />
-                <div className="agent-info">
-                  <span className="name">{agent.name}</span>
-                  <span className="message">Clique para conversar</span>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {selectedAgent && (
-        <div className="chat-panel">
-          <div className="chat-header">
-            <img src={selectedAgent.image} alt={selectedAgent.name} />
-            <span>{selectedAgent.name}</span>
-            <IoIosClose size={20} onClick={() => setSelectedAgent(null)} />
-          </div>
-
-          <div className="chat-messages">
-            {(messages[selectedAgent.name] || []).map((msg, idx) => (
-              <div key={idx} className={`message ${msg.from}`}>
-                {msg.text}
-              </div>
-            ))}
-          </div>
-
-          <div className="chat-input">
-            <input
-              type="text"
-              placeholder="Digite uma mensagem..."
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            />
-            <button onClick={handleSend}>Enviar</button>
-          </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 };

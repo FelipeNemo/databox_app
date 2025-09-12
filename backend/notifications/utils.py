@@ -2,7 +2,7 @@
 Funções utilitárias para criação e envio de notificações no sistema.
 
 Funções:
-1. criar_notificacao_diaria - cria notificações diárias únicas por usuário.
+1. criar_notificacao_ - cria notificações diárias únicas por usuário.
 2. criar_notificacao_random - cria notificações aleatórias únicas por dia.
 3. enviar_notificacao - envia notificação em tempo real via WebSocket.
 """
@@ -12,14 +12,14 @@ from channels.layers import get_channel_layer
 from django.utils.timezone import now
 from .models import Notification
 from rewards.models import Reward
-from notifications.templates import get_daily_notifications, get_random_notification
+from notifications.templates import get__notifications, get_random_notification
 
 # -----------------------------
 # 1️⃣ Notificações diárias
 # -----------------------------
-def criar_notificacoes_diarias(user):
+def criar_notificacoes_s(user):
     hoje = now().date()
-    notificacoes_templates = get_daily_notifications()
+    notificacoes_templates = get__notifications()
     criadas = []
 
     for template in notificacoes_templates:
@@ -33,7 +33,7 @@ def criar_notificacoes_diarias(user):
         if not existe:
             notif = Notification.objects.create(
                 user=user,
-                notification_type="diaria",
+                notification_type="daily",
                 title=template["title"],
                 message=template["message"],
             )
@@ -118,7 +118,7 @@ def enviar_notificacao(user_id, titulo, descricao, tipo="info"):
     - user_id: id do usuário
     - titulo: título da notificação
     - descricao: mensagem da notificação
-    - tipo: tipo da notificação (ex: "info", "reward", "diaria")
+    - tipo: tipo da notificação (ex: "info", "reward", "")
     """
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(

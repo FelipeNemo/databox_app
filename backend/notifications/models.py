@@ -16,10 +16,13 @@ class Notification(models.Model):
 
     # Tipos de notificação possíveis
     NOTIFICATION_TYPES = [
-        ('reward', 'Recompensa'),
-        ('daily', 'Tarefa Diária'),
-        ('alert', 'Alerta'),
-    ]
+    ("reward", "Recompensa"),
+    ("", "Tarefa Diária"),
+    ("random", "Aleatória"), 
+    ("alert", "Alerta"),
+    ("agent", "Agente")
+]
+
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=255, default="Sem título")

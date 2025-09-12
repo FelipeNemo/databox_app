@@ -2,7 +2,7 @@
 .gamification-panel h2,
 .mission-panel h2 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 6px;
   font-weight: 400;
   font-size: 1.5rem;
 }
@@ -24,12 +24,14 @@
 .gamification-panel,
 .mission-panel {
   background-color: #f9f9f9;
+  margin-bottom: 2px;
   height: 200px;
-  padding: 20px;
+  padding: 10px 10px;
   width: 594px;
   box-shadow: 0 0px 2px rgba(0, 0, 0, 0.7);
   display: flex;
   flex-direction: column;
+  
 }
 
 /* ===================== Missões ===================== */
@@ -105,7 +107,7 @@
 
 /* ===================== Barras de Progresso ===================== */
 .progress-section {
-  margin-bottom: 16px;
+  margin-bottom: 2px;
 }
 
 .progress-bar-container {
@@ -132,4 +134,25 @@
 /* ===================== Coins ===================== */
 .coin-display {
   font-size: 16px;
+  display: flex;
+  align-items: center; /* alinha label e span horizontalmente */
+  gap: 6px;            /* espaço entre label e valor */
+}
+
+.progress-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0px; /* espaçamento entre indicadores */
+  justify-content: flex-start; /* garante que fiquem no topo do painel */
+}
+
+.gamification-panel {
+  background-color: #f9f9f9;
+  margin-bottom: 2px;
+  height: 200px;
+  padding: 10px; /* mantém igual */
+  width: 594px;
+  box-shadow: 0 0px 2px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
 }

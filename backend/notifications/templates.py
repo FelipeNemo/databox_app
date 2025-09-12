@@ -5,7 +5,7 @@ from datetime import datetime
 # -----------------------------------------------
 # 1️⃣ Notificações diárias fixas (se repetem todos os dias)
 # -----------------------------------------------
-DAILY_NOTIFICATIONS = [
+_NOTIFICATIONS = [
     {
         "title": "Treino físico",
         "message": "treine puxar, empurrar pernas  e correr.",
@@ -25,11 +25,11 @@ DAILY_NOTIFICATIONS = [
 ]
 
 
-def get_daily_notifications():
+def get__notifications():
     """
     Retorna a lista fixa de notificações diárias.
     """
-    return DAILY_NOTIFICATIONS
+    return _NOTIFICATIONS
 
 
 # -----------------------------------------------

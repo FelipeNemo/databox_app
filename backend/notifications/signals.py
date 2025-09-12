@@ -2,7 +2,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from notifications.models import Notification
 from rewards.models import Reward
-from notifications.templates import DAILY_NOTIFICATIONS, RANDOM_NOTIFICATIONS, get_random_notification
+from notifications.templates import get__notifications, RANDOM_NOTIFICATIONS, get_random_notification
 
 @receiver(post_save, sender=Notification)
 def reward_from_template(sender, instance, created, **kwargs):
@@ -21,12 +21,13 @@ def reward_from_template(sender, instance, created, **kwargs):
     if Reward.objects.filter(notification=instance).exists():
         return
 
-    # Tenta pegar a configuração de recompensas pelo título da notificação
-    reward_config = next(
-        (n["rewards"] for n in DAILY_NOTIFICATIONS if n["title"] == instance.title),
-        None
-    )
 
+    daily_notifications = get__notifications()
+    reward_config = next(
+        (n["rewards"] for n in daily_notifications if n["title"] == instance.title),
+        None
+        )
+    
     if reward_config is None:
         reward_config = next(
             (n["rewards"] for n in RANDOM_NOTIFICATIONS if n["title"] == instance.title),

@@ -18,7 +18,7 @@ from notifications.serializers import NotificationSerializer
 from django.http import JsonResponse
 
 from userauths.models import User
-from notifications.utils import criar_notificacoes_diarias
+from notifications.utils import criar_notificacoes_s
 
 
 # Registro base (usado por estudante e empresa)
@@ -60,7 +60,7 @@ class LoginView(APIView):
         refresh = RefreshToken.for_user(user)
         
         # 🔹 Cria notificações diárias no login
-        criar_notificacoes_diarias(user)
+        criar_notificacoes_s(user)
 
         return Response({
             "refresh": str(refresh),
