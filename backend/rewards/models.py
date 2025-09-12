@@ -32,6 +32,18 @@ class Reward(models.Model):
     status = models.CharField(max_length=20, default="pending")
     created_at = models.DateTimeField(auto_now_add=True)
     granted_at = models.DateTimeField(null=True, blank=True)
+    
+    
+    # Para cada (user, notification), pode ter vários reward_types diferentes (ex: XP + Vitalidade + Moeda).
+    # Mas não pode ter duplicado do mesmo reward_type para a mesma notificação.
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "notification", "reward_type"],
+                name="unique_reward_per_type_per_notification"
+            )
+        ]
+
 
     def mark_granted(self):
         """Marca a recompensa como concedida."""
