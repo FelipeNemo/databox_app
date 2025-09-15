@@ -73,6 +73,7 @@ def criar_notificacao_random(user):
 # -----------------------------
 # 3️⃣ Criação de recompensas
 # -----------------------------
+
 def _criar_recompensas(user, notif, rewards):
     """
     Cria recompensas vinculadas à notificação.
@@ -80,26 +81,34 @@ def _criar_recompensas(user, notif, rewards):
     """
     partes = []
 
-    if rewards.get("xp", 0) > 0:
-        Reward.objects.create(
-            user=user, notification=notif,
-            reward_type=Reward.TYPE_XP, amount=rewards["xp"]
-        )
-        partes.append(f"{rewards['xp']} XP")
+    try:
+        if rewards.get("xp", 0) > 0:
+            Reward.objects.create(
+                user=user, notification=notif,
+                reward_type=getattr(Reward, "TYPE_XP", "xp"),
+                amount=rewards["xp"]
+            )
+            partes.append(f"{rewards['xp']} XP")
 
-    if rewards.get("coin", 0) > 0:
-        Reward.objects.create(
-            user=user, notification=notif,
-            reward_type=Reward.TYPE_COIN, amount=rewards["coin"]
-        )
-        partes.append(f"{rewards['coin']} moedas")
+        if rewards.get("coin", 0) > 0:
+            Reward.objects.create(
+                user=user, notification=notif,
+                reward_type=getattr(Reward, "TYPE_COIN", "coin"),
+                amount=rewards["coin"]
+            )
+            partes.append(f"{rewards['coin']} moedas")
 
-    if rewards.get("vitality", 0) > 0:
-        Reward.objects.create(
-            user=user, notification=notif,
-            reward_type=Reward.TYPE_VITALITY, amount=rewards["vitality"]
-        )
-        partes.append(f"{rewards['vitality']} Vitalidade")
+        if rewards.get("vitality", 0) > 0:
+            Reward.objects.create(
+                user=user, notification=notif,
+                reward_type=getattr(Reward, "TYPE_VITALITY", "vitality"),
+                amount=rewards["vitality"]
+            )
+            partes.append(f"{rewards['vitality']} Vitalidade")
+
+    except Exception as e:
+        # 🔒 Loga mas não quebra login
+        print(f"[ERRO Reward] {e}")
 
     # Atualiza o texto resumo das recompensas na notificação
     if partes:
