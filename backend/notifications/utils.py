@@ -1,3 +1,4 @@
+#notifications/utils.py
 """
 Funções utilitárias para criação e envio de notificações no sistema.
 
@@ -17,13 +18,24 @@ from notifications.templates import get__notifications, get_random_notification
 # -----------------------------
 # 1️⃣ Notificações diárias
 # -----------------------------
+
 def criar_notificacoes_s(user):
     hoje = now().date()
     notificacoes_templates = get__notifications()
     criadas = []
 
+    # Conta quantas notificações diárias já existem hoje
+    existentes = Notification.objects.filter(
+        user=user, 
+        notification_type="daily",
+        created_at__date=hoje
+    ).count()
+
+    # Só cria se ainda não atingiu o limite (3)
     for template in notificacoes_templates:
-        # Verifica se já existe notificação hoje
+        if existentes >= 3:
+            break
+
         existe = Notification.objects.filter(
             user=user,
             title=template["title"],
@@ -37,10 +49,9 @@ def criar_notificacoes_s(user):
                 title=template["title"],
                 message=template["message"],
             )
-            criadas.append(notif)
-
-            # Cria recompensas vinculadas à notificação
             _criar_recompensas(user, notif, template.get("rewards", {}))
+            criadas.append(notif)
+            existentes += 1
 
     return criadas
 
@@ -49,10 +60,15 @@ def criar_notificacoes_s(user):
 # -----------------------------
 def criar_notificacao_random(user):
     hoje = now().date()
-
-    # Se já existe random hoje, não cria outra
-    if Notification.objects.filter(user=user, notification_type="random", created_at__date=hoje).exists():
-        return None
+    
+    notif = Notification.objects.filter(
+        user=user,
+        notification_type="random",
+        created_at__date=hoje
+    ).first()
+    
+    if notif:
+        return notif  # já existe, retorna existente
 
     template = get_random_notification()
     if not template:
@@ -65,9 +81,7 @@ def criar_notificacao_random(user):
         message=template["message"],
     )
 
-    # Cria recompensas vinculadas à notificação
     _criar_recompensas(user, notif, template.get("rewards", {}))
-
     return notif
 
 # -----------------------------

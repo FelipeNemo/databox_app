@@ -4,25 +4,38 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Notification
 from .serializers import NotificationSerializer
-from .utils import enviar_notificacao
+from .utils import _criar_recompensas
 from rewards.models import Reward
 from rewards.services import RewardService
 from django.shortcuts import get_object_or_404
 
-from notifications.utils import criar_notificacoes_s
+
+from django.utils.timezone import now
+from django.db.models import Q
+
+
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def user_notifications(request):
     user = request.user
-    # 🔹 Agora só busca as notificações ainda não lidas
+    agora = now()  # pega data e hora atual com timezone
+
     notifications = Notification.objects.filter(
-        user=user, is_read=False
+        user=user,
+        is_read=False
+    ).filter(
+        # Mostra:
+        # - notificações não 'schedule' (daily/random/alert/agent)
+        # OR
+        # - notificações 'schedule' cujo horário já passou
+        Q(~Q(notification_type='schedule')) |
+        Q(notification_type='schedule', scheduled_for__lte=agora)
     ).order_by('-created_at')
-    
+
     serializer = NotificationSerializer(notifications, many=True)
     return Response(serializer.data)
-
 
 
 @api_view(['POST'])
@@ -125,3 +138,46 @@ def deletar_notificacoes_hoje(request):
     deleted_count, _ = queryset.delete()
 
     return Response({"message": f"{deleted_count} notificações de hoje deletadas junto com suas recompensas."})
+
+
+from django.utils.dateparse import parse_datetime
+
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def criar_notificacao_personalizada(request):
+
+    user = request.user
+    title = request.data.get("title")
+    message = request.data.get("message")
+    rewards = request.data.get("rewards", {})
+    notification_type = request.data.get("notification_type", "schedule")
+    scheduled_for = request.data.get("scheduled_for")
+
+    if not title or not message:
+        return Response({"error": "Título e mensagem são obrigatórios"}, status=400)
+
+    if scheduled_for:
+        scheduled_for = parse_datetime(scheduled_for)
+
+    # converter recompensas para inteiros
+    for key in ["xp", "coin", "vitality"]:
+        if key in rewards:
+            rewards[key] = int(rewards[key])
+
+    notif = Notification.objects.create(
+        user=user,
+        title=title,
+        message=message,
+        notification_type=notification_type,
+        scheduled_for=scheduled_for,
+    )
+
+    _criar_recompensas(user, notif, rewards)
+
+    return Response({
+        "id": notif.id,
+        "message": "Notificação criada com sucesso",
+        "scheduled_for": scheduled_for,
+    })

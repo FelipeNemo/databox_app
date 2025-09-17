@@ -17,10 +17,11 @@ class Notification(models.Model):
     # Tipos de notificação possíveis
     NOTIFICATION_TYPES = [
     ("reward", "Recompensa"),
-    ("", "Tarefa Diária"),
+    ("daily", "Tarefa Diária"),
     ("random", "Aleatória"), 
     ("alert", "Alerta"),
-    ("agent", "Agente")
+    ("agent", "Agente"),
+    ('schedule', 'Agendada')
 ]
 
 
@@ -32,8 +33,10 @@ class Notification(models.Model):
         max_length=50, choices=NOTIFICATION_TYPES, default='alert'
     )
     created_at = models.DateTimeField(auto_now_add=True)
+    
     is_read = models.BooleanField(default=False)
-
+    
+    scheduled_for = models.DateTimeField(null=True, blank=True)
     # Campos relacionados a recompensas
     reward_text = models.CharField(max_length=255, blank=True, null=True)
     reward_count = models.IntegerField(default=0)  # renomeado de "rewards" para evitar conflito
