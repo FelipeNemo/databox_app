@@ -91,6 +91,7 @@
   width: 1240px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   overflow: hidden;
+  transition: height 0.3s ease;
 }
 
 .chat-header {
@@ -173,7 +174,7 @@
 
 .chat-body {
   display: flex;
-  height: 400px; /* altura do chat */
+  height: 700px; /* altura do chat */
 }
 
 .agents-sidebar .trigger-btn {
@@ -219,4 +220,100 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+}
+
+/* umas paradas */
+.presets-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.preset-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 10px 15px;
+  cursor: pointer;
+  color: #fff;
+  transition: 0.2s;
+  text-align: left;
+}
+
+.preset-btn strong {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.preset-btn p {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.preset-btn:hover {
+  background: #0d9df1;
+  color: #fff;
+}
+
+.agent-modal-overlay {
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+}
+
+
+.agent-modal-content {
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 12px;
+  width: 700px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: white;
+}
+
+.agent-modal-content input,
+.agent-modal-content textarea {
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 8px;
+  background: #222;
+  color: white;
+}
+
+.rewards {
+  display: flex;
+  gap: 10px;
+}
+
+.agent-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.agent-modal-actions button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.agent-modal-actions button:first-child {
+  background: #0d9df1;
+  color: #000;
+}
+
+.agent-modal-actions button:last-child {
+  background: #444;
+  color: #fff;
 }

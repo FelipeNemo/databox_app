@@ -13,6 +13,8 @@ urlpatterns = [
     path("auth/", include("userauths.urls")),  # autenticação
     path("notifications/", include('notifications.urls')),  # notificações
     path("rewards/", include("rewards.urls")),  # recompensas
+    
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

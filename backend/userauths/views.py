@@ -18,7 +18,7 @@ from notifications.serializers import NotificationSerializer
 from django.http import JsonResponse
 
 from userauths.models import User
-from notifications.utils import criar_notificacoes_s
+from notifications.utils import criar_notificacoes_s, criar_notificacao_random
 
 
 # Registro base (usado por estudante e empresa)
@@ -46,7 +46,7 @@ class RegisterView(APIView):
         return Response({"message": "Usuário registrado com sucesso"}, status=status.HTTP_201_CREATED)
 
 
-# Login com criação de notificações diárias
+# Login com criação de notificações diárias + random
 class LoginView(APIView):
     def post(self, request):
         username = request.data.get("username")
@@ -59,30 +59,25 @@ class LoginView(APIView):
         # JWT
         refresh = RefreshToken.for_user(user)
         
-        # 🔹 Cria notificações diárias no login
-        criar_notificacoes_s(user)
+        # 🔹 Cria notificações diárias
+        diarias = criar_notificacoes_s(user)  # retorna lista de notificações criadas
+
+        # 🔹 Cria notificação random (apenas 1)
+        random_notif = criar_notificacao_random(user)
+
+        # 🔹 Juntar todas para enviar de volta no login
+        todas_notifs = diarias
+        if random_notif:
+            todas_notifs.append(random_notif)
+
+        serializer = NotificationSerializer(todas_notifs, many=True)
 
         return Response({
             "refresh": str(refresh),
             "access": str(refresh.access_token),
-            "tipo_conta": user.tipo_conta
+            "tipo_conta": user.tipo_conta,
+            "notifications": serializer.data  # 🔹 notificações do dia
         })
-
-# Notificações do usuário (somente as não lidas do dia atual)
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def user_notifications(request):
-    user = request.user
-    hoje = now().date()
-
-    notifications = Notification.objects.filter(
-        user=user,
-        is_read=False,
-        created_at__date=hoje
-    ).order_by('-created_at')
-
-    serializer = NotificationSerializer(notifications, many=True)
-    return Response(serializer.data)
 
 
 # Criar usuário especial (admin/helpers)
